@@ -1,0 +1,59 @@
+{
+  "name": "@liustack/mdpress",
+  "version": "0.1.0",
+  "description": "CLI for AI agents to convert Markdown into WeChat MP-ready HTML with inline styles, base64 images, and tag sanitization",
+  "type": "module",
+  "bin": {
+    "mdpress": "./dist/main.js"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build",
+    "docs:list": "node scripts/docs-list.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "markdown",
+    "wechat",
+    "wechat-mp",
+    "inline-styles",
+    "base64-images",
+    "cli",
+    "ai-agent"
+  ],
+  "author": "Leon Liu",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liustack/mdpress.git"
+  },
+  "bugs": {
+    "url": "https://github.com/liustack/mdpress/issues"
+  },
+  "homepage": "https://github.com/liustack/mdpress#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@types/hast": "^3.0.4",
+    "commander": "^13.1.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.1",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vitest": "^4.0.18"
+  }
+}
