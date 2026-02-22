@@ -22,6 +22,7 @@ export default defineConfig({
                 'rehype-raw',
                 'rehype-stringify',
                 'unist-util-visit',
+                'sharp',
                 // Node.js built-ins
                 'fs',
                 'path',
