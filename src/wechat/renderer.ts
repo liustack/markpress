@@ -8,6 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeStringify from 'rehype-stringify';
 import {
     rehypeSanitizeTags,
+    rehypeMermaid,
     rehypeBase64Images,
     rehypeCodeHighlight,
     rehypeFootnoteLinks,
@@ -47,6 +48,7 @@ export async function render(options: RenderOptions): Promise<RenderResult> {
         .use(remarkRehype, { allowDangerousHtml: true })
         .use(rehypeRaw)
         .use(rehypeSanitizeTags)
+        .use(rehypeMermaid)
         .use(rehypeBase64Images, { baseDir: inputDir })
         .use(rehypeCodeHighlight)
         .use(rehypeFootnoteLinks)
