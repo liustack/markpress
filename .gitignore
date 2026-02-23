@@ -6,6 +6,7 @@ node_modules/
 
 # generated outputs
 skills/**/outputs/
+test/fixtures/visual-test.html
 
 # logs
 npm-debug.log*

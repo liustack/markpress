@@ -30,8 +30,8 @@ function protectWhitespace(children: ElementContent[]): ElementContent[] {
                 let text = parts[i];
                 // Replace tabs with two NBSP
                 text = text.replace(/\t/g, '\u00A0\u00A0');
-                // Replace leading spaces with NBSP
-                text = text.replace(/^( +)/, (match) => '\u00A0'.repeat(match.length));
+                // Replace ALL spaces with NBSP (WeChat editor strips/justifies normal spaces between <span> tags)
+                text = text.replace(/ /g, '\u00A0');
                 if (text) {
                     result.push({ type: 'text', value: text });
                 }

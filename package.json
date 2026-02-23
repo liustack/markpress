@@ -41,6 +41,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@crosscopy/clipboard": "^0.3.6",
     "@types/hast": "^3.0.4",
     "commander": "^13.1.0",
     "rehype-highlight": "^7.0.2",

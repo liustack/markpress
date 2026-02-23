@@ -6,6 +6,8 @@ import * as path from 'path';
 import sharp from 'sharp';
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB WeChat limit
+const MIN_FILE_SIZE = 1 * 1024; // 1KB minimum file size
+const MIN_DIMENSION = 120; // Minimum width/height in pixels
 
 type SourceType = 'local' | 'remote' | 'data-uri';
 
@@ -32,7 +34,7 @@ function detectFormat(ext: string): string {
 
 /**
  * Compress a buffer and return a base64 data URI.
- * SVG: base64-encode directly (no sharp processing).
+ * SVG: rasterize to PNG via sharp (WeChat doesn't support SVG base64).
  * GIF: resize with sharp (animated: true) to stay under maxSize.
  * Others: convert to PNG with compression; fall back to JPEG if needed.
  */
@@ -42,23 +44,42 @@ async function compressToDataUri(
     maxSize: number,
     sourcePath: string,
 ): Promise<string> {
-    // SVG: no sharp processing, just base64 encode
+    // --- Unified validation (fast fail for all formats) ---
+    if (buffer.length < MIN_FILE_SIZE) {
+        throw new Error(
+            `Image file too small: ${sourcePath} (${buffer.length} bytes, minimum ${MIN_FILE_SIZE} bytes)`,
+        );
+    }
+
+    const meta = await sharp(buffer).metadata();
+    const width = meta.width ?? 0;
+    const height = meta.height ?? 0;
+    if (width < MIN_DIMENSION || height < MIN_DIMENSION) {
+        throw new Error(
+            `Image too small: ${sourcePath} (${width}x${height}px, minimum ${MIN_DIMENSION}x${MIN_DIMENSION}px)`,
+        );
+    }
+
+    // --- Format-specific processing ---
+
+    // SVG: rasterize to PNG (WeChat editor doesn't support data:image/svg+xml)
     if (mime === 'image/svg+xml') {
-        return `data:${mime};base64,${buffer.toString('base64')}`;
+        const pngBuffer = await sharp(buffer).png().toBuffer();
+        return `data:image/png;base64,${pngBuffer.toString('base64')}`;
     }
 
     // GIF: preserve animation, resize if too large
     if (mime === 'image/gif') {
         let result = buffer;
         if (result.length > maxSize) {
-            let width = 1080;
-            while (width >= 100) {
+            let gifWidth = 1080;
+            while (gifWidth >= 100) {
                 result = await sharp(buffer, { animated: true })
-                    .resize({ width, withoutEnlargement: true })
+                    .resize({ width: gifWidth, withoutEnlargement: true })
                     .gif()
                     .toBuffer();
                 if (result.length <= maxSize) break;
-                width = Math.floor(width * 0.7);
+                gifWidth = Math.floor(gifWidth * 0.7);
             }
         }
         if (result.length > maxSize) {
@@ -69,9 +90,8 @@ async function compressToDataUri(
         return `data:image/gif;base64,${result.toString('base64')}`;
     }
 
-    // Other formats: try PNG at original size first
-    const metadata = await sharp(buffer).metadata();
-    const width = metadata.width || 1920;
+    // Other formats: reuse metadata from dimension check above
+    const origWidth = width || 1920;
     let result: Buffer;
 
     // Try PNG at original size (lossless)
@@ -84,7 +104,7 @@ async function compressToDataUri(
     }
 
     // Shrink PNG progressively if over 2MB
-    let currentWidth = width;
+    let currentWidth = origWidth;
     while (currentWidth >= 100) {
         currentWidth = Math.floor(currentWidth * 0.8);
         result = await sharp(buffer)
@@ -97,7 +117,7 @@ async function compressToDataUri(
     }
 
     // PNG failed — fall back to JPEG (flatten alpha to white background)
-    for (let jpegWidth = width; jpegWidth >= 100; jpegWidth = Math.floor(jpegWidth * 0.8)) {
+    for (let jpegWidth = origWidth; jpegWidth >= 100; jpegWidth = Math.floor(jpegWidth * 0.8)) {
         for (const quality of [85, 70, 50]) {
             result = await sharp(buffer)
                 .flatten({ background: { r: 255, g: 255, b: 255 } })

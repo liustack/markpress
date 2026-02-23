@@ -18,12 +18,14 @@ import {
 export interface RenderOptions {
     input: string;
     output: string;
+    copy?: boolean;
 }
 
 export interface RenderResult {
     input: string;
     output: string;
     size: number;
+    copied?: boolean;
 }
 
 export async function render(options: RenderOptions): Promise<RenderResult> {
@@ -62,9 +64,17 @@ export async function render(options: RenderOptions): Promise<RenderResult> {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, html, 'utf-8');
 
+    let copied = false;
+    if (options.copy) {
+        const { copyToClipboard } = await import('./clipboard.ts');
+        await copyToClipboard(html);
+        copied = true;
+    }
+
     return {
         input: inputPath,
         output: outputPath,
         size: Buffer.byteLength(html, 'utf-8'),
+        ...(copied ? { copied } : {}),
     };
 }

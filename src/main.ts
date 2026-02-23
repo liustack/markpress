@@ -13,11 +13,13 @@ program
     .version(__APP_VERSION__)
     .requiredOption('-i, --input <path>', 'Input Markdown file path')
     .requiredOption('-o, --output <path>', 'Output HTML file path')
+    .option('-c, --copy', 'Copy rendered HTML to clipboard via Playwright')
     .action(async (options) => {
         try {
             const result = await render({
                 input: options.input,
                 output: options.output,
+                copy: options.copy,
             });
             console.log(JSON.stringify(result, null, 2));
         } catch (error) {

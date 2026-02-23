@@ -2,27 +2,30 @@ import type { Plugin } from 'unified';
 import type { Root, Element, ElementContent } from 'hast';
 import { visit, SKIP } from 'unist-util-visit';
 
+type LinkType = 'wechat' | 'anchor' | 'external';
+
 /**
- * Check if a link is internal (should be preserved as <a>).
- * Internal: anchor (#), relative (./  ../  /), or mp.weixin.qq.com domain.
+ * Classify a link by type.
+ * - wechat: mp.weixin.qq.com → preserve as <a>
+ * - anchor: # / relative → strip <a> tag, keep text (WeChat doesn't support anchors)
+ * - external: http(s) → convert to footnote reference
  */
-function isInternalLink(href: string): boolean {
+function classifyLink(href: string): LinkType {
     if (href.startsWith('//')) {
-        return false;
+        return 'external';
     }
     if (href.startsWith('#') || href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
-        return true;
+        return 'anchor';
     }
     try {
         const url = new URL(href);
         if (url.hostname === 'mp.weixin.qq.com' || url.hostname.endsWith('.mp.weixin.qq.com')) {
-            return true;
+            return 'wechat';
         }
     } catch {
-        // Not a valid URL, treat as internal
-        return true;
+        return 'anchor';
     }
-    return false;
+    return 'external';
 }
 
 /**
@@ -40,28 +43,35 @@ export const rehypeFootnoteLinks: Plugin<[], Root> = () => {
         const footnotes: Array<{ index: number; url: string; text: string }> = [];
         let counter = 0;
 
-        // Pass 1: replace external links with text + sup
+        // Pass 1: process all <a> tags based on link type
         visit(tree, 'element', (node: Element, index, parent) => {
             if (node.tagName !== 'a' || index === undefined || !parent) return;
 
             const href = node.properties?.href;
             if (typeof href !== 'string') return;
 
-            if (isInternalLink(href)) return;
+            const linkType = classifyLink(href);
 
-            // Get or assign footnote number
+            // WeChat links: preserve as <a>
+            if (linkType === 'wechat') return;
+
+            // Anchor links: strip <a> tag, keep children text only
+            if (linkType === 'anchor') {
+                parent.children.splice(index, 1, ...node.children);
+                return [SKIP, index + node.children.length];
+            }
+
+            // External links: convert to footnote reference
             let num = urlMap.get(href);
             if (num === undefined) {
                 counter++;
                 num = counter;
                 urlMap.set(href, num);
 
-                // Extract link text for the reference list
                 const text = extractText(node);
                 footnotes.push({ index: num, url: href, text });
             }
 
-            // Replace <a> with children + <sup>[N]</sup>
             const replacement: ElementContent[] = [
                 ...node.children,
                 {

@@ -8,42 +8,49 @@
 
 export type StyleMap = Record<string, string>;
 
+// WeChat native font stack (covers iOS PingFang + Android/Windows YaHei)
+const FONT_BODY = '"mp-quote",PingFang SC,system-ui,-apple-system,BlinkMacSystemFont,Helvetica Neue,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Arial,sans-serif';
+const FONT_MONO = 'Menlo,Consolas,Monaco,"Courier New",monospace';
+
+const F = `font-family: ${FONT_BODY};`;
+const FM = `font-family: ${FONT_MONO};`;
+
 export const defaultStyles: StyleMap = {
     // Headings — Apple style: 600 weight, tight letter-spacing
-    h1: 'font-size: 24px; font-weight: 600; margin: 0 0 16px; line-height: 1.2; letter-spacing: -0.02em; color: #1d1d1f;',
-    h2: 'font-size: 20px; font-weight: 600; margin: 32px 0 12px; line-height: 1.25; color: #1d1d1f;',
-    h3: 'font-size: 17px; font-weight: 600; margin: 24px 0 8px; line-height: 1.3; color: #1d1d1f;',
-    h4: 'font-size: 15px; font-weight: 600; margin: 20px 0 6px; line-height: 1.4; color: #6e6e73;',
-    h5: 'font-size: 14px; font-weight: 600; margin: 16px 0 4px; line-height: 1.4; color: #6e6e73;',
-    h6: 'font-size: 13px; font-weight: 600; margin: 16px 0 4px; line-height: 1.4; color: #86868b;',
+    h1: `${F} font-size: 24px; font-weight: 600; margin: 0 0 16px; line-height: 1.2; letter-spacing: -0.02em; color: #1d1d1f;`,
+    h2: `${F} font-size: 20px; font-weight: 600; margin: 32px 0 12px; line-height: 1.25; color: #1d1d1f;`,
+    h3: `${F} font-size: 17px; font-weight: 600; margin: 24px 0 8px; line-height: 1.3; color: #1d1d1f;`,
+    h4: `${F} font-size: 15px; font-weight: 600; margin: 20px 0 6px; line-height: 1.4; color: #6e6e73;`,
+    h5: `${F} font-size: 14px; font-weight: 600; margin: 16px 0 4px; line-height: 1.4; color: #6e6e73;`,
+    h6: `${F} font-size: 13px; font-weight: 600; margin: 16px 0 4px; line-height: 1.4; color: #86868b;`,
 
-    // Paragraphs — 15px body, 1.75 line-height (comfortable for Chinese)
-    p: 'font-size: 15px; line-height: 1.75; margin: 0 0 1.25em; color: #1d1d1f;',
+    // Paragraphs — 16px body, 1.75 line-height (comfortable for Chinese)
+    p: `${F} font-size: 16px; line-height: 1.75; margin: 0 0 1.25em; color: #1d1d1f;`,
 
     // Blockquote — restrained: left border + italic only, no background
-    blockquote: 'margin: 1.5em 0; padding: 0 0 0 1em; border-left: 3px solid #d2d2d7; color: #6e6e73; font-style: italic;',
+    blockquote: `${F} margin: 1.5em 0; padding: 0 0 0 1em; border-left: 3px solid #d2d2d7; color: #6e6e73; font-style: italic;`,
 
-    // Inline code — subtle gray background
-    code: 'font-size: 0.875em; font-family: "SF Mono", Menlo, Consolas, monospace; background: #f5f5f7; color: #1d1d1f; padding: 0.15em 0.4em; border-radius: 4px;',
-    // Code block — GitHub-style light gray bg, no border
-    'pre code': 'display: block; font-size: 13px; font-family: "SF Mono", Menlo, Consolas, monospace; background: #f6f8fa; color: #1d1d1f; padding: 20px 24px; border-radius: 8px; overflow-x: auto; line-height: 1.6;',
+    // Inline code — subtle gray background, monospace
+    code: `${FM} font-size: 0.875em; background: #f5f5f7; color: #1d1d1f; padding: 0.15em 0.4em; border-radius: 4px;`,
+    // Code block — GitHub-style light gray bg, no border, monospace
+    'pre code': `${FM} display: block; font-size: 13px; background: #f6f8fa; color: #1d1d1f; padding: 20px 24px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; line-height: 1.6; text-align: left;`,
     pre: 'margin: 1.5em 0;',
 
     // Lists
-    ul: 'margin: 1em 0; padding-left: 1.5em; font-size: 15px; line-height: 1.75; color: #1d1d1f;',
-    ol: 'margin: 1em 0; padding-left: 1.5em; font-size: 15px; line-height: 1.75; color: #1d1d1f;',
-    li: 'margin: 0.4em 0;',
-
-    // Table — clean: bottom borders only, no vertical lines
-    table: 'width: 100%; margin: 1.5em 0; font-size: 14px; border-collapse: collapse;',
-    th: 'padding: 12px 16px; text-align: left; font-weight: 600; color: #1d1d1f; font-size: 14px; border-bottom: 1px solid #d2d2d7;',
-    td: 'padding: 12px 16px; border-bottom: 1px solid #e5e5ea; color: #1d1d1f;',
+    ul: `${F} margin: 1em 0; padding-left: 1.5em; font-size: 16px; line-height: 1.75; color: #1d1d1f;`,
+    ol: `${F} margin: 1em 0; padding-left: 1.5em; font-size: 16px; line-height: 1.75; color: #1d1d1f;`,
+    li: `${F} margin: 0.4em 0; color: #1d1d1f;`,
 
     // Links — WeChat blue
     a: 'color: #576b95; text-decoration: none;',
 
     // Images
-    img: 'max-width: 100%; height: auto; display: block; margin: 1.5em auto; border-radius: 8px;',
+    img: 'max-width: 100%; height: auto; display: block; margin: 1.5em auto; border-radius: 10px;',
+
+    // Tables — minimalist: collapse borders, thin lines
+    table: `${F} width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 16px; border-radius: 2px;`,
+    th: `${F} padding: 10px 12px; border-bottom: 1px solid #d2d2d7; font-weight: 600; text-align: left; color: #1d1d1f;`,
+    td: `${F} padding: 10px 12px; border-bottom: 1px solid #e5e5ea; color: #1d1d1f;`,
 
     // Horizontal rule
     hr: 'border: none; height: 1px; background: #d2d2d7; margin: 2em 0;',
@@ -59,8 +66,8 @@ export const defaultStyles: StyleMap = {
     sub: 'font-size: 0.75em; vertical-align: sub;',
 
     // Section / figure
-    section: 'margin: 0.5em 0;',
-    figcaption: 'font-size: 13px; color: #86868b; text-align: center; margin-top: 8px;',
+    section: `${F} margin: 0.5em 0;`,
+    figcaption: `${F} font-size: 13px; color: #86868b; text-align: center; margin-top: 8px;`,
     figure: 'margin: 1.5em 0; text-align: center;',
 
     // Mark
