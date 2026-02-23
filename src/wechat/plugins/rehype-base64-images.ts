@@ -69,51 +69,49 @@ async function compressToDataUri(
         return `data:image/gif;base64,${result.toString('base64')}`;
     }
 
-    // Other formats: try PNG first
+    // Other formats: try PNG at original size first
     const metadata = await sharp(buffer).metadata();
-    let width = metadata.width || 1080;
+    const width = metadata.width || 1920;
     let result: Buffer;
 
-    // Start with PNG compression
+    // Try PNG at original size (lossless)
     result = await sharp(buffer)
-        .resize({ width: Math.min(width, 1080), withoutEnlargement: true })
-        .png({ compressionLevel: 9 })
+        .png({ compressionLevel: 6 })
         .toBuffer();
 
     if (result.length <= maxSize) {
         return `data:image/png;base64,${result.toString('base64')}`;
     }
 
-    // Shrink progressively
-    let currentWidth = Math.min(width, 1080);
+    // Shrink PNG progressively if over 2MB
+    let currentWidth = width;
     while (currentWidth >= 100) {
-        currentWidth = Math.floor(currentWidth * 0.7);
+        currentWidth = Math.floor(currentWidth * 0.8);
         result = await sharp(buffer)
             .resize({ width: currentWidth, withoutEnlargement: true })
-            .png({ compressionLevel: 9 })
+            .png({ compressionLevel: 6 })
             .toBuffer();
         if (result.length <= maxSize) {
             return `data:image/png;base64,${result.toString('base64')}`;
         }
     }
 
-    // Last resort: JPEG (if no alpha channel)
-    if (!metadata.hasAlpha) {
-        currentWidth = Math.min(width, 1080);
-        while (currentWidth >= 100) {
+    // PNG failed — fall back to JPEG (flatten alpha to white background)
+    for (let jpegWidth = width; jpegWidth >= 100; jpegWidth = Math.floor(jpegWidth * 0.8)) {
+        for (const quality of [85, 70, 50]) {
             result = await sharp(buffer)
-                .resize({ width: currentWidth, withoutEnlargement: true })
-                .jpeg({ quality: 80 })
+                .flatten({ background: { r: 255, g: 255, b: 255 } })
+                .resize({ width: jpegWidth, withoutEnlargement: true })
+                .jpeg({ quality })
                 .toBuffer();
             if (result.length <= maxSize) {
                 return `data:image/jpeg;base64,${result.toString('base64')}`;
             }
-            currentWidth = Math.floor(currentWidth * 0.7);
         }
     }
 
     throw new Error(
-        `Image exceeds 2MB after compression: ${sourcePath} (${(result.length / 1024 / 1024).toFixed(1)}MB)`,
+        `Image exceeds 2MB after all compression attempts: ${sourcePath} (${(result!.length / 1024 / 1024).toFixed(1)}MB)`,
     );
 }
 
@@ -142,7 +140,9 @@ export const rehypeBase64Images: Plugin<[Base64ImagesOptions], Root> = (options)
             if (sourceType !== 'local') return;
 
             const imgPath = path.resolve(baseDir, src);
-            if (!fs.existsSync(imgPath)) return;
+            if (!fs.existsSync(imgPath)) {
+                throw new Error(`Image file not found: ${imgPath}`);
+            }
 
             const ext = path.extname(imgPath).slice(1).toLowerCase();
             const mime = detectFormat(ext);

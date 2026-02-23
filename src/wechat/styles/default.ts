@@ -25,8 +25,8 @@ export const defaultStyles: StyleMap = {
 
     // Inline code — subtle gray background
     code: 'font-size: 0.875em; font-family: "SF Mono", Menlo, Consolas, monospace; background: #f5f5f7; color: #1d1d1f; padding: 0.15em 0.4em; border-radius: 4px;',
-    // Code block — light theme: light gray bg + thin border + rounded corners
-    'pre code': 'display: block; font-size: 13px; font-family: "SF Mono", Menlo, Consolas, monospace; background: #f5f5f7; color: #1d1d1f; padding: 20px 24px; border-radius: 8px; overflow-x: auto; line-height: 1.6; border: 1px solid #d2d2d7;',
+    // Code block — GitHub-style light gray bg, no border
+    'pre code': 'display: block; font-size: 13px; font-family: "SF Mono", Menlo, Consolas, monospace; background: #f6f8fa; color: #1d1d1f; padding: 20px 24px; border-radius: 8px; overflow-x: auto; line-height: 1.6;',
     pre: 'margin: 1.5em 0;',
 
     // Lists
@@ -36,7 +36,7 @@ export const defaultStyles: StyleMap = {
 
     // Table — clean: bottom borders only, no vertical lines
     table: 'width: 100%; margin: 1.5em 0; font-size: 14px; border-collapse: collapse;',
-    th: 'padding: 12px 16px; text-align: left; font-weight: 600; color: #6e6e73; font-size: 13px; letter-spacing: 0.02em; border-bottom: 2px solid #d2d2d7;',
+    th: 'padding: 12px 16px; text-align: left; font-weight: 600; color: #1d1d1f; font-size: 14px; border-bottom: 1px solid #d2d2d7;',
     td: 'padding: 12px 16px; border-bottom: 1px solid #e5e5ea; color: #1d1d1f;',
 
     // Links — WeChat blue

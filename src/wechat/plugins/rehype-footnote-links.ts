@@ -7,6 +7,9 @@ import { visit, SKIP } from 'unist-util-visit';
  * Internal: anchor (#), relative (./  ../  /), or mp.weixin.qq.com domain.
  */
 function isInternalLink(href: string): boolean {
+    if (href.startsWith('//')) {
+        return false;
+    }
     if (href.startsWith('#') || href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
         return true;
     }

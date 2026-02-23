@@ -42,6 +42,72 @@ const INLINE_TAGS = new Set([
     'span', 'sup', 'sub', 'mark', 'code', 'br', 'img',
 ]);
 
+const ALLOWED_URL_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+const DISALLOWED_STYLE_PROPS = new Set(['position', 'font-family']);
+const DISALLOWED_STYLE_VALUE_PATTERNS = [
+    /url\s*\(/i,
+    /expression\s*\(/i,
+    /javascript:/i,
+    /vbscript:/i,
+    /data:/i,
+];
+
+function hasExplicitScheme(value: string): boolean {
+    return /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(value);
+}
+
+function sanitizeUrl(value: string, attrName: 'href' | 'src' | 'xLinkHref' | 'xlinkHref'): string | null {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    if (trimmed.startsWith('#')) return trimmed;
+    if (trimmed.startsWith('./') || trimmed.startsWith('../')) return trimmed;
+    if (trimmed.startsWith('/')) return trimmed;
+
+    if (!hasExplicitScheme(trimmed)) {
+        // Relative path without explicit scheme, e.g. images/a.png
+        return trimmed;
+    }
+
+    if ((attrName === 'src' || attrName === 'xLinkHref' || attrName === 'xlinkHref') && trimmed.startsWith('data:')) {
+        return /^data:image\/[a-zA-Z0-9.+-]+;base64,/i.test(trimmed) ? trimmed : null;
+    }
+
+    try {
+        const parsed = new URL(trimmed);
+        if (!ALLOWED_URL_PROTOCOLS.has(parsed.protocol)) {
+            return null;
+        }
+        return trimmed;
+    } catch {
+        return null;
+    }
+}
+
+function sanitizeStyle(style: string): string | null {
+    const kept: string[] = [];
+
+    for (const decl of style.split(';')) {
+        const trimmed = decl.trim();
+        if (!trimmed) continue;
+
+        const colonIdx = trimmed.indexOf(':');
+        if (colonIdx === -1) continue;
+
+        const prop = trimmed.slice(0, colonIdx).trim().toLowerCase();
+        const value = trimmed.slice(colonIdx + 1).trim();
+        if (!prop || !value) continue;
+
+        if (DISALLOWED_STYLE_PROPS.has(prop)) continue;
+        if (DISALLOWED_STYLE_VALUE_PATTERNS.some((pattern) => pattern.test(value))) continue;
+
+        kept.push(`${prop}: ${value}`);
+    }
+
+    if (kept.length === 0) return null;
+    return `${kept.join('; ')};`;
+}
+
 function isElement(node: any): node is Element {
     return node && node.type === 'element';
 }
@@ -104,12 +170,35 @@ export const rehypeSanitizeTags: Plugin<[], Root> = () => {
             // Clean attributes
             if (node.properties) {
                 const props = node.properties;
+
                 // Remove id
                 delete props.id;
+
                 // Remove on* event handlers
                 for (const key of Object.keys(props)) {
                     if (key.startsWith('on') && key.length > 2) {
                         delete props[key];
+                    }
+                }
+
+                // Sanitize URL-like attributes
+                for (const attr of ['href', 'src', 'xLinkHref', 'xlinkHref'] as const) {
+                    if (typeof props[attr] !== 'string') continue;
+                    const sanitized = sanitizeUrl(props[attr], attr);
+                    if (sanitized === null) {
+                        delete props[attr];
+                    } else {
+                        props[attr] = sanitized;
+                    }
+                }
+
+                // Remove unsupported or dangerous style declarations
+                if (typeof props.style === 'string') {
+                    const sanitizedStyle = sanitizeStyle(props.style);
+                    if (sanitizedStyle === null) {
+                        delete props.style;
+                    } else {
+                        props.style = sanitizedStyle;
                     }
                 }
             }
