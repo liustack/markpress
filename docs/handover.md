@@ -39,23 +39,31 @@ markdown → remark (mdast) → rehype (hast) → transform hast → serialize t
 ### What's done
 
 - Project scaffolding (package.json, tsconfig, vite, etc.)
-- CLI entry point (`src/main.ts`) with `-i` / `-o` options
+- CLI entry point (`src/main.ts`) with `-i` / `-o` / `--copy` options
 - Rendering pipeline (`src/wechat/renderer.ts`) wired up with unified
-- Three rehype plugin skeletons (`src/wechat/plugins.ts`):
-  - `rehypeSanitizeTags` — skeleton only, needs tag blacklist
-  - `rehypeBase64Images` — implemented, converts local images to base64 data URIs
-  - `rehypeInlineStyles` — skeleton only, strips `className` but no style injection yet
+- 6 rehype plugins (all implemented, tested):
+  - `rehypeSanitizeTags` — tag whitelist, div→section, checkbox→Unicode, attribute cleanup
+  - `rehypeMermaid` — mermaid code blocks → Playwright 2x PNG base64 (optional)
+  - `rehypeBase64Images` — local images → sharp compress (2MB limit) → base64 data URI
+  - `rehypeCodeHighlight` — highlight.js syntax highlighting + whitespace protection (nbsp, br)
+  - `rehypeFootnoteLinks` — external links → footnotes + References section, preserve mp.weixin.qq.com
+  - `rehypeInlineStyles` — default styles + hljs colors → inline style attr, remove className
+- Style system (`src/wechat/styles/default.ts`):
+  - Apple-inspired minimalist design with WeChat native font stack
+  - Xcode Light syntax highlighting theme
+  - 16px body, 1.75 line-height for Chinese reading
+- Clipboard (`src/wechat/clipboard.ts`):
+  - `@crosscopy/clipboard` native addon for HTML rich-text clipboard write
+- Testing: vitest with 70 tests across 10 test files, all passing
 - TypeScript type check passes
 - Vite build passes
 
 ### What's NOT done
 
-1. **Inline styles** — need to define a default style map per HTML tag (h1–h6, p, blockquote, code, pre, table, ul/ol/li, a, img, hr, etc.) that produces WeChat-compatible rendering
-2. **Tag sanitization** — need to research and define the exact list of tags/attributes WeChat editor strips or breaks on
-3. **Code syntax highlighting** — not yet integrated; consider rehype-highlight or shiki
-4. **Testing** — no tests yet; vitest is referenced in docs but not configured
-5. **README** — not yet created
-6. **Agent skill** — no `skills/` SKILL.md yet
+1. **README** — not yet created
+2. **Agent skill** — no `skills/` SKILL.md yet
+3. **Custom style themes** — only default style map exists, no user-customizable themes
+4. **Remote image support** — only local images are processed, remote URLs are passed through
 
 ## WeChat MP HTML Constraints (for reference)
 
@@ -71,19 +79,34 @@ markdown → remark (mdast) → rehype (hast) → transform hast → serialize t
 
 ```
 src/
-├── main.ts             # CLI entry (commander)
-└── wechat/             # WeChat domain
-    ├── renderer.ts     # unified pipeline orchestration
-    └── plugins.ts      # rehype plugins for WeChat transforms
+├── main.ts                     # CLI entry (commander)
+└── wechat/                     # WeChat domain
+    ├── renderer.ts             # unified pipeline orchestration
+    ├── clipboard.ts            # System clipboard via @crosscopy/clipboard
+    ├── plugins/                # Rehype plugins (6 total)
+    │   ├── index.ts
+    │   ├── rehype-sanitize-tags.ts
+    │   ├── rehype-mermaid.ts
+    │   ├── rehype-base64-images.ts
+    │   ├── rehype-code-highlight.ts
+    │   ├── rehype-footnote-links.ts
+    │   └── rehype-inline-styles.ts
+    └── styles/
+        └── default.ts          # Apple-inspired style map + Xcode Light hljs theme
 ```
 
-The plugin execution order in the pipeline matters:
+Pipeline execution order (order matters):
 
 ```
-remarkParse → remarkGfm → remarkRehype → rehypeSanitizeTags → rehypeBase64Images → rehypeInlineStyles → rehypeStringify
+Markdown → remarkParse → remarkGfm → remarkRehype → rehypeRaw
+  → 1. rehypeSanitizeTags
+  → 2. rehypeMermaid
+  → 3. rehypeBase64Images
+  → 4. rehypeCodeHighlight
+  → 5. rehypeFootnoteLinks
+  → 6. rehypeInlineStyles
+  → rehypeStringify → HTML → (optional) clipboard
 ```
-
-Sanitize first (remove unsupported nodes), then transform remaining nodes (base64, styles).
 
 ## Key Dependencies
 
@@ -93,6 +116,11 @@ Sanitize first (remove unsupported nodes), then transform remaining nodes (base6
 | `remark-parse` | Markdown → mdast |
 | `remark-gfm` | GFM support (tables, strikethrough, task lists) |
 | `remark-rehype` | mdast → hast bridge |
+| `rehype-raw` | Parse raw HTML in Markdown into HAST |
 | `rehype-stringify` | hast → HTML string |
 | `unist-util-visit` | AST tree traversal for plugins |
+| `highlight.js` | Code syntax highlighting |
+| `sharp` | Image compression, format conversion, SVG rasterization |
+| `@crosscopy/clipboard` | Native system clipboard HTML read/write |
+| `playwright` | Mermaid diagram rendering (optional) |
 | `commander` | CLI framework |

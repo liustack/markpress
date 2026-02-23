@@ -100,13 +100,25 @@ read_when:
 
 #### 推荐字体栈
 
+**调研前推荐（通用方案）：**
+
 ```css
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
              PingFang SC, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei,
              Arial, sans-serif;
 ```
 
-覆盖 macOS（PingFang SC）、Windows（Microsoft YaHei）、iOS/Android 系统字体。
+**mdpress 实际采用（微信原生字体栈，2026-02-23 确定）：**
+
+```css
+font-family: "mp-quote", PingFang SC, system-ui, -apple-system, BlinkMacSystemFont,
+             Helvetica Neue, Hiragino Sans GB, Microsoft YaHei UI, Microsoft YaHei,
+             Arial, sans-serif;
+```
+
+来源：微信编辑器自身使用的 `mp-quote` 字体族。调研了 4 个主流开源微信 Markdown 编辑器（doocs/md、lyricat/wechat-format、ufologist/wechat-mp-article、mzlogin/online-markdown），其中只有 lyricat/wechat-format 使用逐元素内联 font-family 方式（与 mdpress 架构一致）。
+
+**关键约束：** font-family 必须在每个文本承载元素上内联设置，不能依赖 CSS 继承（微信剥离 `<style>` 标签）。
 
 ### 3.3 图片格式与大小
 
@@ -165,31 +177,24 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
 | 原始字符 | 替换为 | 原因 |
 |---------|--------|------|
 | `\n` | `<br>` | 编辑器吞掉换行符 |
-| 行首空格 | `\u00A0`（NBSP） | 编辑器去除行首普通空格 |
+| **所有空格** | `\u00A0`（NBSP） | 编辑器对 `<span>` 间普通空格做 justify 拉伸或删除 |
 | 制表符 `\t` | `\u00A0\u00A0` | 编辑器不支持制表符 |
 | `\r\n` | `<br>`（忽略 `\r`） | CRLF 兼容 |
-| `<span>` 间空格 | `\u00A0` | 编辑器会删除 span 之间的普通空格 |
 
 **关键实现：** 只替换文本节点中的空白，不替换 HTML 标签属性内的。
 
-```typescript
-// md2oa 的正则方案
-code = code.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
-  if (tag) return tag; // HTML 标签原样返回
-  return text
-    .replace(/\r\n|\r|\n/g, '<br>')
-    .replace(/ /g, '&nbsp;');
-});
-```
+**2026-02-23 实测补充：**
+
+1. **必须替换所有空格，不仅是行首空格**。微信编辑器对代码块内 `<span>` 标签之间的普通空格应用 `text-align: justify` 拉伸，导致单词间距异常宽。只替换行首空格不够，必须替换代码块内全部空格为 `\u00A0`。
+2. **必须在 `<code>` 上设置 `text-align: left`**。即使全部空格替换为 NBSP，微信编辑器仍可能对换行后的文本做 justify。显式设置 `text-align: left` 是必要的防御。
+3. 两个修复缺一不可：NBSP 防止空格被删除/合并，`text-align: left` 防止 justify 拉伸。
 
 ```typescript
-// bm.md 更精细的方案（区分行首空格、制表符等）
-function protectCodeWhitespace(node) {
-  // 逐 text 节点处理，区分行首和行内空格
-  // 行首空格 → \u00A0
-  // 制表符 \t → \u00A0\u00A0
-  // 换行 \n → <br>
-}
+// mdpress 实际实现（rehype-code-highlight.ts protectWhitespace）
+// 在 HAST 层逐 text 节点处理，递归进入 <span>（hljs 嵌套 span）
+text = text.replace(/\t/g, '\u00A0\u00A0');  // tab → 2 NBSP
+text = text.replace(/ /g, '\u00A0');          // ALL spaces → NBSP
+// \n → <br> element (split by \n, insert <br> between parts)
 ```
 
 ### 3.6 链接处理

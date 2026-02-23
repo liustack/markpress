@@ -25,10 +25,11 @@ src/
 ├── main.ts                     # CLI entry
 └── wechat/                     # WeChat domain
     ├── renderer.ts             # Main rendering pipeline
+    ├── clipboard.ts            # System clipboard (HTML rich-text) via @crosscopy/clipboard
     ├── plugins/                # Rehype plugins for WeChat transformations
     │   ├── index.ts            # Re-exports all plugins
     │   ├── rehype-sanitize-tags.ts    # Tag whitelist, div→section, checkbox→Unicode
-    │   ├── rehype-mermaid.ts            # Mermaid diagrams → Playwright + PNG base64 (optional)
+    │   ├── rehype-mermaid.ts          # Mermaid diagrams → Playwright + PNG base64 (optional)
     │   ├── rehype-base64-images.ts    # Local images → sharp compress → base64
     │   ├── rehype-code-highlight.ts   # Syntax highlighting + whitespace protection
     │   ├── rehype-footnote-links.ts   # External links → footnotes + References
@@ -60,6 +61,43 @@ Markdown → remarkParse → remarkGfm → remarkRehype → rehypeRaw
 mdpress -i article.md -o output.html
 ```
 
+## Clipboard Notes
+
+`clipboard.ts` uses `@crosscopy/clipboard`（native Rust + napi-rs addon）to write HTML directly to system clipboard as `text/html` MIME type.
+
+**Key decisions:**
+- Playwright headed browser approach was replaced — headless Chromium does NOT support system clipboard (Playwright Issue #24039)
+- `@crosscopy/clipboard` provides `setHtml()` / `getHtml()` for native clipboard read/write without browser
+- No Playwright dependency for clipboard; Playwright is only used for mermaid rendering
+- Read `docs/clipboard.md` before modifying clipboard behavior
+
+## Style & Font Notes
+
+**Font stack:** WeChat native font stack applied per-element via inline `font-family`:
+```
+"mp-quote",PingFang SC,system-ui,-apple-system,BlinkMacSystemFont,Helvetica Neue,Hiragino Sans GB,Microsoft YaHei UI,Microsoft YaHei,Arial,sans-serif
+```
+
+**Key decisions:**
+- Font-family MUST be inline per element (WeChat strips `<style>` tags, no CSS inheritance)
+- `default.ts` uses template constants `F` (body font) and `FM` (mono font) to DRY the style map
+- Body text: 16px, line-height 1.75 (comfortable for Chinese reading)
+- Code: Menlo,Consolas,Monaco,"Courier New",monospace
+- Color: `#1d1d1f` body, `#6e6e73` secondary, `#86868b` tertiary (Apple gray palette)
+- Read `docs/styles.md` before modifying default styles
+
+## Image Compression Notes
+
+`rehype-base64-images` uses sharp for image processing with 2MB per-image limit.
+
+**Key constraints:**
+- 2MB is per-image binary limit (base64 encoding adds ~33% overhead on top)
+- Compression pipeline: PNG (compressionLevel 6) → shrink progressively → fallback to JPEG
+- SVG: rasterized to PNG via sharp (WeChat doesn't support `data:image/svg+xml`)
+- GIF: preserved with animation, resized if over 2MB
+- Minimum validation: ≥1KB file size, ≥120px dimensions (reject tiny/corrupt images)
+- Test fixtures with many large images will produce large HTML — this is expected for base64 inline approach
+
 ## Mermaid Plugin Notes
 
 `rehypeMermaid` renders mermaid code blocks to 2x PNG via Playwright Chromium.
@@ -73,10 +111,18 @@ mdpress -i article.md -o output.html
 
 ## Operational Docs (`docs/`)
 
-1. Operational docs use front-matter metadata (`summary`, `read_when`).
-2. Before creating a new doc, run `pnpm docs:list` to review the existing index.
-3. Before coding, check the `read_when` hints and read relevant docs as needed.
-4. Existing docs: `commit`, `testing`, `mermaid`, `research/wechat-editor-compatibility`.
+This section is mandatory. Treat it as a hard gate before any code/doc change.
+
+1. Operational docs must use front-matter metadata (`summary`, `read_when`).
+2. Before creating any new doc, you MUST run `pnpm docs:list` first and check whether an existing doc already covers it.
+3. Before writing code, you MUST read all docs whose `read_when` matches the task. Do not start implementation before this step.
+4. If a relevant operational doc exists, follow it. Do not override documented workflow by preference.
+5. If no suitable doc exists, create one with clear `summary` and `read_when` before or alongside implementation.
+6. Existing docs to check first: `commit`, `testing`, `mermaid`, `clipboard`, `styles`, `research/wechat-editor-compatibility`.
+
+Enforcement:
+- Skipping `pnpm docs:list` or required doc reading is a process violation.
+- "I already know this" is not a valid reason to skip this workflow.
 
 ## .gitignore must include
 - `node_modules/`
