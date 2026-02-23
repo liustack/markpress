@@ -1,10 +1,10 @@
 {
-  "name": "@liustack/mdpress",
-  "version": "0.2.1",
+  "name": "@liustack/markpress",
+  "version": "0.3.0",
   "description": "CLI for AI agents to convert Markdown into WeChat MP-ready HTML with inline styles, base64 images, and tag sanitization",
   "type": "module",
   "bin": {
-    "mdpress": "./dist/main.js"
+    "markpress": "./dist/main.js"
   },
   "scripts": {
     "dev": "vite build --watch",
@@ -31,12 +31,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/liustack/mdpress.git"
+    "url": "git+https://github.com/liustack/markpress.git"
   },
   "bugs": {
-    "url": "https://github.com/liustack/mdpress/issues"
+    "url": "https://github.com/liustack/markpress/issues"
   },
-  "homepage": "https://github.com/liustack/mdpress#readme",
+  "homepage": "https://github.com/liustack/markpress#readme",
   "engines": {
     "node": ">=18"
   },

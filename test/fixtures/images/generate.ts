@@ -13,7 +13,7 @@ async function main() {
             </linearGradient>
         </defs>
         <rect width="200" height="200" fill="url(#g)" rx="16"/>
-        <text x="100" y="90" text-anchor="middle" font-size="20" font-weight="600" fill="white" font-family="sans-serif">mdpress</text>
+        <text x="100" y="90" text-anchor="middle" font-size="20" font-weight="600" fill="white" font-family="sans-serif">markpress</text>
         <text x="100" y="120" text-anchor="middle" font-size="14" fill="rgba(255,255,255,0.8)" font-family="sans-serif">200x200 PNG</text>
     </svg>`);
     await sharp(pngSvg).png().toFile(path.join(dir, 'small.png'));
@@ -28,7 +28,7 @@ async function main() {
             </linearGradient>
         </defs>
         <rect width="200" height="200" fill="url(#g2)" rx="16"/>
-        <text x="100" y="90" text-anchor="middle" font-size="20" font-weight="600" fill="white" font-family="sans-serif">mdpress</text>
+        <text x="100" y="90" text-anchor="middle" font-size="20" font-weight="600" fill="white" font-family="sans-serif">markpress</text>
         <text x="100" y="120" text-anchor="middle" font-size="14" fill="rgba(255,255,255,0.8)" font-family="sans-serif">200x200 GIF</text>
     </svg>`);
     const pngBuf = await sharp(gifSvg).png().toBuffer();
@@ -45,7 +45,7 @@ async function main() {
             </linearGradient>
         </defs>
         <rect width="800" height="600" fill="url(#bg)"/>
-        <text x="400" y="270" text-anchor="middle" font-size="48" font-weight="700" fill="white" font-family="sans-serif">mdpress</text>
+        <text x="400" y="270" text-anchor="middle" font-size="48" font-weight="700" fill="white" font-family="sans-serif">markpress</text>
         <text x="400" y="320" text-anchor="middle" font-size="20" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Markdown → WeChat HTML</text>
         <text x="400" y="370" text-anchor="middle" font-size="14" fill="rgba(255,255,255,0.4)" font-family="sans-serif">800x600 Large Image Test</text>
     </svg>`);

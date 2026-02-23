@@ -47,7 +47,7 @@ mermaid 没有 API 分离"渲染质量"和"输出尺寸"。
 ### 对比 pagepress
 
 pagepress 将 mermaid SVG 直接嵌入 PDF（矢量→矢量），不需要位图转换。
-mdpress 必须输出 PNG 位图，因为微信公众号编辑器不支持 SVG。
+markpress 必须输出 PNG 位图，因为微信公众号编辑器不支持 SVG。
 
 ## SVG 后处理
 
@@ -82,7 +82,7 @@ mermaid SVG 的 DOM 顺序为：`clusters → edgePaths → edgeLabels → nodes
 
 ## 主题配置
 
-极简灰色主题，匹配 mdpress 整体设计语言：
+极简灰色主题，匹配 markpress 整体设计语言：
 
 - 节点背景：`#f6f8fa`，边框：`#e5e5ea`
 - 连线颜色：`#86868b`

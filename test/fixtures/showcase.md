@@ -310,4 +310,4 @@ graph LR
 
 ---
 
-*本文使用 mdpress 编写并渲染，所有图表均由 Mermaid + Playwright 实时渲染。*
+*本文使用 markpress 编写并渲染，所有图表均由 Mermaid + Playwright 实时渲染。*

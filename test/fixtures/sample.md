@@ -1,4 +1,4 @@
-# Welcome to mdpress
+# Welcome to markpress
 
 This is a **bold** and *italic* paragraph with `inline code`.
 

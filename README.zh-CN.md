@@ -1,4 +1,4 @@
-# mdpress
+# markpress
 
 面向 AI Agent 的 Markdown 转换 CLI，可将 Markdown 输出为编辑器可粘贴的 HTML：
 
@@ -21,35 +21,35 @@
 ## 安装
 
 ```bash
-npm install -g @liustack/mdpress
+npm install -g @liustack/markpress
 ```
 
 或使用 `npx`：
 
 ```bash
-npx @liustack/mdpress [options]
+npx @liustack/markpress [options]
 ```
 
 也可以作为 **Agent Skill** 安装 — 在任何支持 Agent Skill 的 AI 编程工具（Claude Code、Codex、OpenCode、Cursor、Antigravity 等）中输入：
 
 ```
-帮我安装这个 skill：https://github.com/liustack/mdpress
+帮我安装这个 skill：https://github.com/liustack/markpress
 ```
 
 或使用 `skills` CLI 直接安装：
 
 ```bash
-npx skills add https://github.com/liustack/mdpress --skill mdpress
+npx skills add https://github.com/liustack/markpress --skill markpress
 ```
 
 ## 用法
 
 ```bash
 # 将 Markdown 转换为公众号可用的 HTML
-mdpress -i article.md -o output.html
+markpress -i article.md -o output.html
 
 # 将 Markdown 转换为 X/Twitter Articles 可粘贴的 HTML
-mdpress -i article.md -o output.html --target x
+markpress -i article.md -o output.html --target x
 ```
 
 输出为 JSON 格式：
@@ -64,7 +64,7 @@ mdpress -i article.md -o output.html --target x
 
 ## 处理流程
 
-mdpress 使用 unified（remark + rehype）管线，依次执行 6 个转换：
+markpress 使用 unified（remark + rehype）管线，依次执行 6 个转换：
 
 1. **标签清洗** — 基于白名单过滤标签，`div` → `section`，checkbox → Unicode ☑/☐，移除 `id` 和事件处理器
 2. **Mermaid 渲染** — mermaid 代码块通过 Playwright 渲染为 PNG（极简风格主题，可选，需安装 `mermaid` + `playwright`）
@@ -95,7 +95,7 @@ mdpress 使用 unified（remark + rehype）管线，依次执行 6 个转换：
 
 ## AI Agent Skill
 
-- [mdpress/SKILL.md](skills/mdpress/SKILL.md)
+- [markpress/SKILL.md](skills/markpress/SKILL.md)
 
 ## License
 

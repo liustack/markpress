@@ -28,5 +28,5 @@
   <circle cx="90" cy="30" r="2" fill="#667eea" opacity="0.6"/>
   <circle cx="95" cy="42" r="1.5" fill="#f093fb" opacity="0.5"/>
   <circle cx="85" cy="22" r="1" fill="#764ba2" opacity="0.4"/>
-  <text x="60" y="108" text-anchor="middle" font-size="9" font-family="system-ui,sans-serif" font-weight="600" fill="#6e6e73">mdpress</text>
+  <text x="60" y="108" text-anchor="middle" font-size="9" font-family="system-ui,sans-serif" font-weight="600" fill="#6e6e73">markpress</text>
 </svg>

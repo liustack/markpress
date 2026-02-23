@@ -1,5 +1,5 @@
 ---
-summary: 'Project handover: background, architecture decisions, and next steps for mdpress'
+summary: 'Project handover: background, architecture decisions, and next steps for markpress'
 read_when:
   - First time working on this project
   - Need to understand project context and decisions
@@ -10,11 +10,11 @@ read_when:
 
 ## Project Background
 
-mdpress is part of a personal document rendering toolchain ("press" series):
+markpress is part of a personal document rendering toolchain ("press" series):
 
 - **webpress** — HTML → PNG
 - **pagepress** — Markdown/HTML → PDF
-- **mdpress** — Markdown → WeChat MP-compatible HTML
+- **markpress** — Markdown → WeChat MP-compatible HTML
 
 Each tool is an independent CLI designed for AI agent consumption. They share naming conventions and architectural patterns but do not share code. The relationship is pipeline upstream/downstream, not library dependency.
 
@@ -22,7 +22,7 @@ Each tool is an independent CLI designed for AI agent consumption. They share na
 
 pagepress uses `marked` for its Markdown parsing, which works fine because its output goes straight to Playwright for rendering — no HTML-level transformation needed.
 
-mdpress is different. Its three core operations are all **HTML AST transformations**:
+markpress is different. Its three core operations are all **HTML AST transformations**:
 
 1. Sanitize unsupported tags
 2. Convert local images to base64

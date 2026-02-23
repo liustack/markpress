@@ -9,7 +9,7 @@ read_when:
 # 微信公众号编辑器兼容性研究
 
 > 调研日期：2026-02-22
-> 调研目标：为 `mdpress` 明确"可稳定粘贴到公众号编辑器"的 HTML 生成边界，并形成可实现的工程策略（含 `sharp` 图片链路）。
+> 调研目标：为 `markpress` 明确"可稳定粘贴到公众号编辑器"的 HTML 生成边界，并形成可实现的工程策略（含 `sharp` 图片链路）。
 
 ## 1. 结论先行（可直接用于实现）
 
@@ -108,7 +108,7 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
              Arial, sans-serif;
 ```
 
-**mdpress 实际采用（微信原生字体栈，2026-02-23 确定）：**
+**markpress 实际采用（微信原生字体栈，2026-02-23 确定）：**
 
 ```css
 font-family: "mp-quote", PingFang SC, system-ui, -apple-system, BlinkMacSystemFont,
@@ -116,7 +116,7 @@ font-family: "mp-quote", PingFang SC, system-ui, -apple-system, BlinkMacSystemFo
              Arial, sans-serif;
 ```
 
-来源：微信编辑器自身使用的 `mp-quote` 字体族。调研了 4 个主流开源微信 Markdown 编辑器（doocs/md、lyricat/wechat-format、ufologist/wechat-mp-article、mzlogin/online-markdown），其中只有 lyricat/wechat-format 使用逐元素内联 font-family 方式（与 mdpress 架构一致）。
+来源：微信编辑器自身使用的 `mp-quote` 字体族。调研了 4 个主流开源微信 Markdown 编辑器（doocs/md、lyricat/wechat-format、ufologist/wechat-mp-article、mzlogin/online-markdown），其中只有 lyricat/wechat-format 使用逐元素内联 font-family 方式（与 markpress 架构一致）。
 
 **关键约束：** font-family 必须在每个文本承载元素上内联设置，不能依赖 CSS 继承（微信剥离 `<style>` 标签）。
 
@@ -190,7 +190,7 @@ font-family: "mp-quote", PingFang SC, system-ui, -apple-system, BlinkMacSystemFo
 3. 两个修复缺一不可：NBSP 防止空格被删除/合并，`text-align: left` 防止 justify 拉伸。
 
 ```typescript
-// mdpress 实际实现（rehype-code-highlight.ts protectWhitespace）
+// markpress 实际实现（rehype-code-highlight.ts protectWhitespace）
 // 在 HAST 层逐 text 节点处理，递归进入 <span>（hljs 嵌套 span）
 text = text.replace(/\t/g, '\u00A0\u00A0');  // tab → 2 NBSP
 text = text.replace(/ /g, '\u00A0');          // ALL spaces → NBSP
@@ -242,25 +242,25 @@ References
 
 **架构：** React 19 + TanStack Start + Vite 7 全栈 Web 应用
 
-**技术栈与 mdpress 的关系：** 同样使用 unified (remark + rehype) 管线，技术路线最接近。
+**技术栈与 markpress 的关系：** 同样使用 unified (remark + rehype) 管线，技术路线最接近。
 
 **可借鉴：**
 
-| 特性 | 实现方式 | 对 mdpress 的意义 |
+| 特性 | 实现方式 | 对 markpress 的意义 |
 |------|---------|------------------|
-| CSS 内联 | `juice.inlineContent(html, css)` 将 CSS 选择器匹配并内联 | mdpress 可在 rehype 层直接注入（方案 A），或用 juice 后处理（方案 B） |
-| 平台适配器 | `PlatformAdapter` 接口，各平台独立插件集 | 清晰解耦，mdpress 若未来支持多平台可参考 |
+| CSS 内联 | `juice.inlineContent(html, css)` 将 CSS 选择器匹配并内联 | markpress 可在 rehype 层直接注入（方案 A），或用 juice 后处理（方案 B） |
+| 平台适配器 | `PlatformAdapter` 接口，各平台独立插件集 | 清晰解耦，markpress 若未来支持多平台可参考 |
 | 微信链接转脚注 | `rehypeFootnoteLinks` 插件 | 直接可移植的 rehype 插件模式 |
 | 代码空白保护 | `protectCodeWhitespace` — 精确区分行首/行内/标签间空格 | 最细粒度的处理方案 |
 | 文本节点包裹 | `rehypeWrapTextNodes` — 裸文本包 `<span>` | 确保 juice 能内联样式到文本 |
 | div → section | `rehypeDivToSection` | 规避微信 `<div>` 不稳定问题 |
 | 任务列表适配 | checkbox → Unicode ☑/☐ | 简洁有效 |
-| Worker 渲染 | oRPC + MessagePort | mdpress 是 CLI，不需要此设计 |
-| CSS 构建 | `?raw` + lightningcss 压缩 | mdpress 是 CLI，样式表可直接内嵌 |
+| Worker 渲染 | oRPC + MessagePort | markpress 是 CLI，不需要此设计 |
+| CSS 构建 | `?raw` + lightningcss 压缩 | markpress 是 CLI，样式表可直接内嵌 |
 
 **注意点：**
-- bm.md 是 Web 应用，有很多 UI/前端逻辑与 mdpress CLI 无关
-- 平台适配器模式对 mdpress 当前阶段过于复杂
+- bm.md 是 Web 应用，有很多 UI/前端逻辑与 markpress CLI 无关
+- 平台适配器模式对 markpress 当前阶段过于复杂
 
 ### 4.2 obsidian-md2wechat（geekjourneyx/obsidian-md2wechat）— 借鉴价值 ★★☆☆☆
 
@@ -289,12 +289,12 @@ References
 
 **可借鉴：**
 
-| 特性 | 实现方式 | 对 mdpress 的意义 |
+| 特性 | 实现方式 | 对 markpress 的意义 |
 |------|---------|------------------|
-| juice 占位符保护 | CSS 内联前用占位符替换 `&nbsp;` 和 `<br>`，处理后还原 | 若 mdpress 使用 juice 方案需要此技巧 |
+| juice 占位符保护 | CSS 内联前用占位符替换 `&nbsp;` 和 `<br>`，处理后还原 | 若 markpress 使用 juice 方案需要此技巧 |
 | 代码空白精确替换 | 正则区分 HTML 标签和文本节点 | 简洁实用的实现方案 |
-| 本地图片转 base64 | cheerio 遍历 `<img>`，读取本地文件转 Data URI | 逻辑直观，mdpress 已有类似实现 |
-| 模板系统 | HTML 模板 + `{{body}}` 占位符，4 种内置主题 | mdpress 是 CLI，不需要模板系统 |
+| 本地图片转 base64 | cheerio 遍历 `<img>`，读取本地文件转 Data URI | 逻辑直观，markpress 已有类似实现 |
+| 模板系统 | HTML 模板 + `{{body}}` 占位符，4 种内置主题 | markpress 是 CLI，不需要模板系统 |
 | macOS 代码框 | 内联 SVG 三色圆点装饰 | 视觉效果好，但 SVG 在微信中有兼容风险 |
 
 **注意点：**
@@ -304,7 +304,7 @@ References
 - SVG 装饰在微信中有兼容性风险，无降级方案
 - VS Code 扩展复制了整个 lib 目录（维护成本高）
 
-## 5. mdpress 推荐实现策略
+## 5. markpress 推荐实现策略
 
 ### 5.1 渲染管线
 
@@ -324,11 +324,11 @@ Markdown → MDAST → HAST → sanitize → image → code-highlight → inline
 
 | 方案 | 说明 | 适用场景 |
 |------|------|---------|
-| **A: rehype 插件直接注入**（推荐） | 在 HAST 层按标签名从样式映射表查找并注入 `style` 属性 | mdpress 场景——标签名到样式的简单映射，无复杂选择器需求 |
+| **A: rehype 插件直接注入**（推荐） | 在 HAST 层按标签名从样式映射表查找并注入 `style` 属性 | markpress 场景——标签名到样式的简单映射，无复杂选择器需求 |
 | B: juice 后处理 | HTML 字符串输出后用 juice 内联 | 需要支持完整 CSS 选择器（嵌套、组合器等） |
 
 推荐方案 A，因为：
-- mdpress 已有 `rehypeInlineStyles` 骨架
+- markpress 已有 `rehypeInlineStyles` 骨架
 - 避免额外的 HTML 序列化→解析开销
 - 对"标签名 → 默认样式"的简单映射足够
 - 不引入 juice 依赖

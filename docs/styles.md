@@ -31,7 +31,7 @@ read_when:
 - **ufologist/wechat-mp-article** — 使用 `<style>` 标签
 - **mzlogin/online-markdown** — 使用 `<style>` 标签
 
-只有 lyricat/wechat-format 使用了与 mdpress 相同的逐元素内联方式。
+只有 lyricat/wechat-format 使用了与 markpress 相同的逐元素内联方式。
 
 ## 字体栈
 

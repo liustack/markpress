@@ -76,7 +76,7 @@ console.log(user);
 ```bash
 pnpm build
 pnpm test
-mdpress -i test/fixtures/x-article-showcase.md -o test/fixtures/x-article-showcase.html --target x --copy
+markpress -i test/fixtures/x-article-showcase.md -o test/fixtures/x-article-showcase.html --target x --copy
 ```
 
 ## 7. Mermaid（X 不支持图像粘贴，预期转占位）
