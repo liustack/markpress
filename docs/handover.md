@@ -49,8 +49,8 @@ markdown → remark (mdast) → rehype (hast) → transform hast → serialize t
   - `rehypeFootnoteLinks` — external links → footnotes + References section, preserve mp.weixin.qq.com
   - `rehypeInlineStyles` — default styles + hljs colors → inline style attr, remove className
 - Style system (`src/wechat/styles/default.ts`):
-  - Apple-inspired minimalist design with WeChat native font stack
-  - Xcode Light syntax highlighting theme
+  - 默认极简风格 with WeChat native font stack
+  - 默认语法高亮主题
   - 16px body, 1.75 line-height for Chinese reading
 - Clipboard (`src/wechat/clipboard.ts`):
   - `@crosscopy/clipboard` native addon for HTML rich-text clipboard write
@@ -92,7 +92,7 @@ src/
     │   ├── rehype-footnote-links.ts
     │   └── rehype-inline-styles.ts
     └── styles/
-        └── default.ts          # Apple-inspired style map + Xcode Light hljs theme
+        └── default.ts          # 默认极简风格样式表 + 默认语法高亮主题
 ```
 
 Pipeline execution order (order matters):

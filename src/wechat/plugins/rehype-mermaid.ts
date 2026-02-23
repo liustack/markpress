@@ -9,7 +9,7 @@ interface MermaidOptions {
     backgroundColor?: string;
 }
 
-// Apple-style gray theme — borderless, soft fills
+// Minimalist gray theme — borderless, soft fills
 const MERMAID_THEME = {
     primaryColor: '#f6f8fa',
     primaryTextColor: '#1d1d1f',
@@ -67,7 +67,7 @@ function collectMermaidBlocks(tree: Root) {
  * Rehype plugin: render mermaid code blocks to PNG images via Playwright.
  *
  * Uses the same approach as pagepress: inject mermaid.min.js into a Playwright
- * Chromium page, render with Apple-style theme, post-process SVG (rounded corners),
+ * Chromium page, render with minimalist theme, post-process SVG (rounded corners),
  * and screenshot to 2x PNG.
  *
  * Dependencies (mermaid + playwright) are optional and loaded dynamically.

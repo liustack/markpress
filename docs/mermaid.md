@@ -82,7 +82,7 @@ mermaid SVG 的 DOM 顺序为：`clusters → edgePaths → edgeLabels → nodes
 
 ## 主题配置
 
-Apple 风格灰色主题，匹配 mdpress 整体设计语言：
+极简灰色主题，匹配 mdpress 整体设计语言：
 
 - 节点背景：`#f6f8fa`，边框：`#e5e5ea`
 - 连线颜色：`#86868b`

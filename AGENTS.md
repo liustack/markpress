@@ -35,7 +35,7 @@ src/
     │   ├── rehype-footnote-links.ts   # External links → footnotes + References
     │   └── rehype-inline-styles.ts    # Default styles + hljs colors → inline style
     └── styles/                 # Style definitions
-        └── default.ts          # Apple-inspired minimalist style map + Xcode Light hljs theme
+        └── default.ts          # 默认极简风格样式表 + 默认语法高亮主题
 ```
 
 ## Pipeline Execution Order
@@ -83,7 +83,7 @@ mdpress -i article.md -o output.html
 - `default.ts` uses template constants `F` (body font) and `FM` (mono font) to DRY the style map
 - Body text: 16px, line-height 1.75 (comfortable for Chinese reading)
 - Code: Menlo,Consolas,Monaco,"Courier New",monospace
-- Color: `#1d1d1f` body, `#6e6e73` secondary, `#86868b` tertiary (Apple gray palette)
+- Color: `#1d1d1f` body, `#6e6e73` secondary, `#86868b` tertiary (灰色调色板)
 - Read `docs/styles.md` before modifying default styles
 
 ## Image Compression Notes

@@ -9,12 +9,12 @@ A CLI toolkit for AI agents to convert Markdown into WeChat MP-ready HTML with i
 - WeChat MP editor compatible HTML output
 - All styles inlined (no external CSS or `<style>` tags)
 - Local images compressed via sharp and embedded as base64 (≤ 2MB)
-- Syntax highlighting with Xcode Light theme (inline colors)
+- Syntax highlighting with default theme (inline colors)
 - Mermaid diagram rendering to PNG (via Playwright, optional)
 - External links converted to footnotes with References section
 - Tag sanitization (whitelist-based, `div` → `section`, dangerous tags removed)
 - GFM support (tables, strikethrough, task lists with ☑/☐)
-- Apple-inspired minimalist default style
+- Minimalist default style
 
 ## Installation
 
@@ -62,11 +62,11 @@ Output is JSON:
 mdpress runs your Markdown through a unified (remark + rehype) pipeline that applies 6 transformations in order:
 
 1. **Sanitize tags** — whitelist-based tag filtering, `div` → `section`, checkbox → Unicode ☑/☐, remove `id` and event handlers
-2. **Mermaid diagrams** — mermaid code blocks rendered to PNG via Playwright with Apple-style theme (optional, requires `mermaid` + `playwright`)
+2. **Mermaid diagrams** — mermaid code blocks rendered to PNG via Playwright with minimalist theme (optional, requires `mermaid` + `playwright`)
 3. **Base64 images** — local images compressed with sharp (PNG/GIF/SVG/JPEG) and embedded as data URIs (≤ 2MB limit)
 4. **Code highlighting** — syntax highlighting via highlight.js with whitespace protection (`\n` → `<br>`, spaces → NBSP)
 5. **Footnote links** — external links replaced with text + `<sup>[N]</sup>`, References section appended; `mp.weixin.qq.com` links preserved
-6. **Inline styles** — Apple-inspired minimalist styles injected per tag, hljs classes converted to inline colors (Xcode Light theme), all `className` removed
+6. **Inline styles** — minimalist default styles injected per tag, hljs classes converted to inline colors, all `className` removed
 
 The result is a self-contained HTML file that can be directly pasted into the WeChat Official Account editor.
 

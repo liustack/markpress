@@ -77,7 +77,7 @@ export const defaultStyles: StyleMap = {
 
 ## 色彩体系
 
-Apple 灰色调色板：
+灰色调色板：
 - `#1d1d1f` — 主文字色（正文、标题、表格）
 - `#6e6e73` — 次要文字（h4/h5、blockquote、代码注释）
 - `#86868b` — 辅助文字（h6、figcaption、删除线）
@@ -104,7 +104,7 @@ Apple 灰色调色板：
 
 ## hljs 语法高亮主题
 
-Xcode Light 主题，匹配浅色代码块背景：
+默认语法高亮主题，匹配浅色代码块背景：
 
 | Token | 颜色 | 示例 |
 |-------|------|------|
