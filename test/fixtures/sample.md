@@ -59,3 +59,12 @@ This has ~~strikethrough~~ text and <mark>highlighted</mark> text.
 <div>This div should become a section.</div>
 
 <script>alert('xss')</script>
+
+## Mermaid Diagram
+
+```mermaid
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[OK]
+    B -->|No| D[Cancel]
+```

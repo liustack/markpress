@@ -98,4 +98,12 @@ describe('end-to-end', () => {
         expect(html).toContain('#f5f5f7'); // code background
         expect(html).toContain('#9b2393'); // keyword purple
     });
+
+    it('should render mermaid diagrams as PNG images', () => {
+        // Mermaid block should be converted to base64 PNG img
+        const mermaidImgCount = (html.match(/data:image\/png;base64,/g) || []).length;
+        expect(mermaidImgCount).toBeGreaterThanOrEqual(1);
+        // No mermaid code block should remain
+        expect(html).not.toContain('language-mermaid');
+    });
 });
