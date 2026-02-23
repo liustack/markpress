@@ -10,7 +10,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const DOCS_DIR = join(process.cwd(), 'docs');
-const SKIP_DIRS = new Set(['bugs', 'archive', 'research']);
+const SKIP_DIRS = new Set(['bugs', 'archive']);
 
 function extractFrontMatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);

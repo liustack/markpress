@@ -32,21 +32,23 @@ describe('rehypeFootnoteLinks', () => {
         expect(html).not.toContain('[2]');
     });
 
-    it('should not convert anchor links to footnotes', async () => {
+    it('should strip anchor links but not add footnotes', async () => {
         const md = '[Section](#my-section)';
         const html = await processWithPlugin(md, rehypeFootnoteLinks);
-        expect(html).toContain('<a');
+        expect(html).toContain('Section');
+        expect(html).not.toContain('<a');
         expect(html).not.toContain('<sup>');
     });
 
-    it('should not convert relative links to footnotes', async () => {
+    it('should strip relative links but not add footnotes', async () => {
         const md = '[Page](./other.md)';
         const html = await processWithPlugin(md, rehypeFootnoteLinks);
-        expect(html).toContain('<a');
+        expect(html).toContain('Page');
+        expect(html).not.toContain('<a');
         expect(html).not.toContain('<sup>');
     });
 
-    it('should treat protocol-relative links as external links', async () => {
+    it('should strip protocol-relative links and add footnotes', async () => {
         const md = '[CDN](//example.com/lib.js)';
         const html = await processWithPlugin(md, rehypeFootnoteLinks);
         expect(html).not.toContain('<a');

@@ -5,10 +5,15 @@ This is a **bold** and *italic* paragraph with `inline code`.
 ## Code Block
 
 ```javascript
-function greet(name) {
-  const msg = `Hello, ${name}!`;
-  return msg;
+// A longer code block to demonstrate word-wrap behavior in WeChat editor
+function createUserProfile(firstName, lastName, email, role = 'viewer', preferences = { theme: 'light', notifications: true, language: 'zh-CN' }) {
+  const fullName = `${firstName} ${lastName}`;
+  const profile = { id: crypto.randomUUID(), fullName, email, role, preferences, createdAt: new Date().toISOString() };
+  console.log(`Created profile for ${fullName} <${email}> with role="${role}" and preferences=${JSON.stringify(preferences)}`);
+  return profile;
 }
+
+const users = ['Alice', 'Bob', 'Charlie'].map((name, i) => createUserProfile(name, name.toLowerCase(), `${name.toLowerCase()}@example.com`, i === 0 ? 'admin' : 'viewer'));
 ```
 
 ## Links
@@ -17,7 +22,7 @@ Visit [GitHub](https://github.com) for code hosting.
 
 Check [Another Link](https://example.com) too.
 
-Read this [WeChat Article](https://mp.weixin.qq.com/s/abc123).
+Read this [WeChat Article](https://mp.weixin.qq.com/s/V5lGAY95eQs3v1j5fZlSUA).
 
 ## Lists
 

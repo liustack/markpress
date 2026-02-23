@@ -12,12 +12,12 @@ beforeAll(async () => {
     fs.mkdirSync(TMP_DIR, { recursive: true });
     fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
-    // Generate test image if not exists
+    // Generate test image if not already present (200x200 with noise, > 2KB)
     const imgPath = path.join(IMAGES_DIR, 'small.png');
-    if (!fs.existsSync(imgPath)) {
-        await sharp({
-            create: { width: 10, height: 10, channels: 3, background: { r: 255, g: 0, b: 0 } },
-        })
+    if (!fs.existsSync(imgPath) || fs.statSync(imgPath).size < 2048) {
+        const noise = Buffer.alloc(200 * 200 * 3);
+        for (let i = 0; i < noise.length; i++) noise[i] = Math.floor(Math.random() * 256);
+        await sharp(noise, { raw: { width: 200, height: 200, channels: 3 } })
             .png()
             .toFile(imgPath);
     }

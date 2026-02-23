@@ -10,24 +10,61 @@ const FIXTURES_DIR = path.resolve(__dirname, '../fixtures/images');
 beforeAll(async () => {
     fs.mkdirSync(FIXTURES_DIR, { recursive: true });
 
-    // Generate a small 10x10 red PNG
-    await sharp({
-        create: { width: 10, height: 10, channels: 3, background: { r: 255, g: 0, b: 0 } },
-    })
+    // Generate a 200x200 PNG with noise (ensures file > 2KB)
+    const noiseBuffer = Buffer.alloc(200 * 200 * 3);
+    for (let i = 0; i < noiseBuffer.length; i++) noiseBuffer[i] = Math.floor(Math.random() * 256);
+    await sharp(noiseBuffer, { raw: { width: 200, height: 200, channels: 3 } })
         .png()
         .toFile(path.join(FIXTURES_DIR, 'small.png'));
 
-    // Generate a small GIF (1x1 pixel)
-    await sharp({
-        create: { width: 1, height: 1, channels: 3, background: { r: 0, g: 255, b: 0 } },
-    })
-        .gif()
-        .toFile(path.join(FIXTURES_DIR, 'small.gif'));
+    // Generate a 200x200 GIF with noise (ensures file > 2KB)
+    const pngBuf = await sharp(noiseBuffer, { raw: { width: 200, height: 200, channels: 3 } })
+        .png()
+        .toBuffer();
+    await sharp(pngBuf).gif().toFile(path.join(FIXTURES_DIR, 'small.gif'));
 
-    // Generate a simple SVG file
+    // Generate a tiny 50x50 PNG with noise (above 2KB file size, below 120px dimension)
+    const tinyNoise = Buffer.alloc(50 * 50 * 3);
+    for (let i = 0; i < tinyNoise.length; i++) tinyNoise[i] = Math.floor(Math.random() * 256);
+    await sharp(tinyNoise, { raw: { width: 50, height: 50, channels: 3 } })
+        .png()
+        .toFile(path.join(FIXTURES_DIR, 'tiny.png'));
+
+    // Generate a detailed SVG icon (document + pen with gradients, shadows, shapes)
     fs.writeFileSync(
         path.join(FIXTURES_DIR, 'icon.svg'),
-        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="10"/></svg>',
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
+    </linearGradient>
+    <linearGradient id="penGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f093fb"/>
+      <stop offset="100%" stop-color="#f5576c"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.15)"/>
+    </filter>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="#f5f5f7" stroke="#e5e5ea" stroke-width="1"/>
+  <rect x="30" y="20" width="50" height="65" rx="4" fill="url(#docGrad)" filter="url(#shadow)"/>
+  <line x1="38" y1="34" x2="72" y2="34" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="44" x2="72" y2="44" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="54" x2="62" y2="54" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="64" x2="68" y2="64" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="74" x2="55" y2="74" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
+  <g transform="translate(68,58) rotate(30)">
+    <rect x="-3" y="-30" width="6" height="36" rx="1.5" fill="url(#penGrad)" filter="url(#shadow)"/>
+    <polygon points="-3,6 3,6 0,12" fill="#f5576c"/>
+    <rect x="-3" y="-30" width="6" height="6" rx="1" fill="rgba(255,255,255,0.3)"/>
+  </g>
+  <path d="M72 20 L80 20 L80 28 Z" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="90" cy="30" r="2" fill="#667eea" opacity="0.6"/>
+  <circle cx="95" cy="42" r="1.5" fill="#f093fb" opacity="0.5"/>
+  <circle cx="85" cy="22" r="1" fill="#764ba2" opacity="0.4"/>
+  <text x="60" y="108" text-anchor="middle" font-size="9" font-family="system-ui,sans-serif" font-weight="600" fill="#6e6e73">mdpress</text>
+</svg>`,
     );
 
     // Generate a large image (3000x3000 to test compression)
@@ -93,11 +130,21 @@ describe('rehypeBase64Images', () => {
         expect(html).toContain('src="data:image/gif;base64,');
     });
 
-    it('should preserve SVG MIME type', async () => {
+    it('should reject images smaller than 120px', async () => {
+        const md = `![alt](images/tiny.png)`;
+        await expect(
+            processWithPlugin(md, rehypeBase64Images, {
+                baseDir: path.resolve(__dirname, '../fixtures'),
+            }),
+        ).rejects.toThrow('Image too small');
+    });
+
+    it('should rasterize SVG to PNG base64', async () => {
         const md = `![alt](images/icon.svg)`;
         const html = await processWithPlugin(md, rehypeBase64Images, {
             baseDir: path.resolve(__dirname, '../fixtures'),
         });
-        expect(html).toContain('src="data:image/svg+xml;base64,');
+        expect(html).toContain('src="data:image/png;base64,');
+        expect(html).not.toContain('image/svg+xml');
     });
 });

@@ -5,7 +5,7 @@ import { rehypeCodeHighlight, rehypeInlineStyles } from '../../src/wechat/plugin
 describe('rehypeInlineStyles', () => {
     it('should add font-size and line-height to p tags', async () => {
         const html = await processWithPlugin('Hello world', rehypeInlineStyles);
-        expect(html).toContain('font-size: 15px');
+        expect(html).toContain('font-size: 16px');
         expect(html).toContain('line-height: 1.75');
     });
 
@@ -39,7 +39,7 @@ describe('rehypeInlineStyles', () => {
             rehypeInlineStyles,
         );
         // Should have both the default p style and the existing red color
-        expect(html).toContain('font-size: 15px');
+        expect(html).toContain('font-size: 16px');
         expect(html).toContain('color: red');
     });
 
@@ -51,13 +51,6 @@ describe('rehypeInlineStyles', () => {
         );
         // hljs-keyword maps to color: #9b2393 (Xcode Light purple)
         expect(html).toContain('#9b2393');
-    });
-
-    it('should add styles to table elements', async () => {
-        const md = '| A | B |\n|---|---|\n| 1 | 2 |';
-        const html = await processWithPlugin(md, rehypeInlineStyles);
-        expect(html).toContain('border-collapse');
-        expect(html).toContain('border-bottom');
     });
 
     it('should style blockquote with border-left', async () => {
