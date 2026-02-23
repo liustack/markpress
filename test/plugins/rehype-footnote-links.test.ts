@@ -56,15 +56,18 @@ describe('rehypeFootnoteLinks', () => {
         expect(html).toContain('//example.com/lib.js');
     });
 
-    it('should append References section at the end', async () => {
+    it('should append References section with title at the end', async () => {
         const md = '[Example](https://example.com)\n\nSome text.';
         const html = await processWithPlugin(md, rehypeFootnoteLinks);
         expect(html).toContain('References');
+        expect(html).toContain('font-size: 13px');
+        expect(html).toContain('#86868b');
+        expect(html).not.toContain('<hr>');
         expect(html).toContain('https://example.com');
         expect(html).toContain('[1]');
     });
 
-    it('should not add References section when no external links', async () => {
+    it('should not add footnote section when no external links', async () => {
         const md = 'Just plain text with no links.';
         const html = await processWithPlugin(md, rehypeFootnoteLinks);
         expect(html).not.toContain('References');

@@ -86,37 +86,31 @@ export const rehypeFootnoteLinks: Plugin<[], Root> = () => {
             return [SKIP, index + replacement.length];
         });
 
-        // Pass 2: append References section if there are footnotes
+        // Pass 2: append footnote list if there are footnotes
         if (footnotes.length > 0) {
+            // Build footnote lines separated by <br> inside a single <section>
+            const footnoteChildren: ElementContent[] = [];
+            for (let i = 0; i < footnotes.length; i++) {
+                if (i > 0) {
+                    footnoteChildren.push({ type: 'element', tagName: 'br', properties: {}, children: [] });
+                }
+                const fn = footnotes[i];
+                footnoteChildren.push({ type: 'text', value: `[${fn.index}] ${fn.text}: ${fn.url}` });
+            }
+
             const referencesSection: Element = {
                 type: 'element',
                 tagName: 'section',
-                properties: {},
+                properties: { style: 'color: #86868b; font-size: 13px; line-height: 1.75; margin-top: 2em; word-break: break-all;' },
                 children: [
-                    { type: 'element', tagName: 'hr', properties: {}, children: [] },
                     {
                         type: 'element',
-                        tagName: 'p',
-                        properties: {},
-                        children: [
-                            {
-                                type: 'element',
-                                tagName: 'strong',
-                                properties: {},
-                                children: [{ type: 'text', value: 'References' }],
-                            },
-                        ],
+                        tagName: 'strong',
+                        properties: { style: 'color: #86868b;' },
+                        children: [{ type: 'text', value: 'References:' }],
                     },
-                    ...footnotes.map(
-                        (fn): Element => ({
-                            type: 'element',
-                            tagName: 'p',
-                            properties: {},
-                            children: [
-                                { type: 'text', value: `[${fn.index}] ${fn.text}: ${fn.url}` },
-                            ],
-                        }),
-                    ),
+                    { type: 'element', tagName: 'br', properties: {}, children: [] },
+                    ...footnoteChildren,
                 ],
             };
 

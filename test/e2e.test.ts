@@ -57,10 +57,10 @@ describe('end-to-end', () => {
     });
 
     it('should convert external links to footnotes with References section', () => {
-        expect(html).toContain('References');
         expect(html).toContain('https://github.com');
         expect(html).toContain('https://example.com');
         expect(html).toContain('<sup');
+        expect(html).toContain('References');
     });
 
     it('should preserve mp.weixin.qq.com links', () => {
@@ -93,7 +93,7 @@ describe('end-to-end', () => {
     });
 
     it('should have syntax highlighting colors in code blocks', () => {
-        // Xcode Light theme colors should be present
+        // Default theme colors should be present
         expect(html).toContain('#f6f8fa'); // code background
         expect(html).toContain('#9b2393'); // keyword purple
     });
