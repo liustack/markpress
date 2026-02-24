@@ -131,16 +131,9 @@ Enforcement:
 
 ## npm Publishing Workflow
 
-Steps in order — do not skip or reorder:
+Run `./scripts/release.sh` which executes: build → git tag → push tag → npm publish.
 
-```bash
-pnpm build
-git tag v$(node -p "require('./package.json').version")
-git push origin v$(node -p "require('./package.json').version")
-pnpm publish --access public --no-git-checks
-```
-
-Build and tag are hard requirements. Do not publish without them.
+Do not publish manually. Always use the release script.
 
 ## .gitignore must include
 - `node_modules/`
