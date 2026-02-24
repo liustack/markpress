@@ -1,6 +1,6 @@
 {
   "name": "@liustack/markpress",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "CLI for AI agents to convert Markdown into WeChat MP-ready HTML with inline styles, base64 images, and tag sanitization",
   "type": "module",
   "bin": {

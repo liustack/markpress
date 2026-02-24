@@ -62,7 +62,8 @@ export async function render(options: RenderOptions): Promise<RenderResult> {
 
     const outputPath = path.resolve(output);
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.writeFileSync(outputPath, html, 'utf-8');
+    const fileHtml = `<meta charset="utf-8">\n${html}`;
+    fs.writeFileSync(outputPath, fileHtml, 'utf-8');
 
     let copied = false;
     if (options.copy) {
