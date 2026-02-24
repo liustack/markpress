@@ -62,6 +62,11 @@ export async function render(options: RenderOptions): Promise<RenderResult> {
 
     const outputPath = path.resolve(output);
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    // rehype-stringify outputs a UTF-8 fragment without document shell.
+    // Browsers default to Latin-1 when no charset is declared, causing
+    // CJK characters to display as mojibake. Prepend the meta tag for
+    // file output only; clipboard HTML is pasted as a fragment and does
+    // not need it.
     const fileHtml = `<meta charset="utf-8">\n${html}`;
     fs.writeFileSync(outputPath, fileHtml, 'utf-8');
 

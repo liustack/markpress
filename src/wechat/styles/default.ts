@@ -43,7 +43,8 @@ export const defaultStyles: StyleMap = {
     // Links — WeChat blue
     a: 'color: #576b95; text-decoration: none;',
 
-    // Images
+    // Images — no top margin: when image is the first element (e.g. cover),
+    // top margin creates excessive spacing in WeChat editor.
     img: 'max-width: 100%; height: auto; display: block; margin: 0 auto 1.5em; border-radius: 10px;',
 
     // Tables — minimalist: collapse borders, thin lines

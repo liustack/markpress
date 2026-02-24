@@ -236,6 +236,18 @@ References
 | GFM 脚注回链 `↩` | 移除（锚点不可用） | B 级：bm.md |
 | 嵌套列表超过 2 层 | 编辑器会截断为最多 2 层 | B 级：wechat-mp-article 实测 |
 
+### 3.8 图片边距（2026-02-24 实测）
+
+图片 `<img>` 不应设置上边距（`margin-top`）。当图片是文章首个元素（如封面图）时，上边距会在微信编辑器中产生不可接受的顶部空白。
+
+**修复：** `margin: 1.5em auto` → `margin: 0 auto 1.5em`，仅保留底部间距和水平居中。
+
+### 3.9 HTML 输出编码声明（2026-02-24 实测）
+
+rehype-stringify 输出的是 UTF-8 编码的 HTML 片段（无 `<html>`/`<head>` 文档壳）。浏览器打开此文件时若无 charset 声明，默认按 Latin-1 解码，导致中文显示为乱码（mojibake）。
+
+**修复：** 写入文件时在 HTML 片段前加 `<meta charset="utf-8">`。剪贴板内容不加（粘贴到微信编辑器时作为片段处理，不需要 charset 声明）。
+
 ## 4. 开源项目分析
 
 ### 4.1 bm.md（miantiao-me/bm.md）— 借鉴价值 ★★★★★
