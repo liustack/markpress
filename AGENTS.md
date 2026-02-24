@@ -131,8 +131,16 @@ Enforcement:
 
 ## npm Publishing Workflow
 
-Run `./scripts/release.sh` which executes: build → git tag → push tag → npm publish.
+```bash
+./scripts/release.sh <patch|minor|major>
+```
 
+Semver decision:
+- **patch** — bug fixes, docs, style tweaks
+- **minor** — new features, new plugins
+- **major** — breaking changes (API, rename, etc.)
+
+The script runs: bump version → build → commit → tag → push → npm publish.
 Do not publish manually. Always use the release script.
 
 ## .gitignore must include
