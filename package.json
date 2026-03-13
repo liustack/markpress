@@ -1,0 +1,64 @@
+{
+  "name": "@liustack/markpress",
+  "version": "0.1.0",
+  "description": "CLI tool to render local Markdown files into PDF",
+  "type": "module",
+  "bin": {
+    "markpress": "./dist/main.js"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "pnpm build",
+    "docs:list": "node scripts/docs-list.js"
+  },
+  "files": [
+    "dist",
+    "src/templates"
+  ],
+  "keywords": [
+    "pdf",
+    "markdown-to-pdf",
+    "pdf-report",
+    "cli",
+    "playwright",
+    "mermaid"
+  ],
+  "author": "Leon Liu",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liustack/markpress.git"
+  },
+  "bugs": {
+    "url": "https://github.com/liustack/markpress/issues"
+  },
+  "homepage": "https://github.com/liustack/markpress#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@fontsource/bebas-neue": "^5.2.7",
+    "@fontsource/cormorant-garamond": "^5.2.11",
+    "@fontsource/inter": "^5.2.8",
+    "commander": "^13.1.0",
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
+    "marked": "^15.0.12",
+    "marked-highlight": "^2.2.3",
+    "mermaid": "^11.12.2",
+    "playwright": "^1.58.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "@vitest/coverage-v8": "^4.0.18",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vite-plugin-node": "^5.0.1",
+    "vitest": "^4.0.18"
+  }
+}
