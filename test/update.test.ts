@@ -36,6 +36,7 @@ describe('checkForUpdate', () => {
             currentVersion: '1.1.1',
             latestVersion: '1.1.2',
             updateAvailable: true,
+            checked: true,
         });
 
         expect(run).toHaveBeenCalledWith('npm', ['view', '@liustack/markpress', 'version']);
@@ -52,6 +53,25 @@ describe('checkForUpdate', () => {
             currentVersion: '1.1.1',
             latestVersion: '1.1.1',
             updateAvailable: false,
+            checked: true,
+        });
+    });
+
+    it('does not throw when the registry is unavailable', async () => {
+        const run: CommandRunner = vi.fn(async () => {
+            throw new Error('network unavailable');
+        });
+
+        await expect(checkForUpdate({
+            currentVersion: '1.1.1',
+            run,
+        })).resolves.toEqual({
+            packageName: '@liustack/markpress',
+            currentVersion: '1.1.1',
+            latestVersion: null,
+            updateAvailable: false,
+            checked: false,
+            error: 'network unavailable',
         });
     });
 });
@@ -71,6 +91,7 @@ describe('createSelfUpdater', () => {
             currentVersion: '1.1.1',
             latestVersion: '1.1.2',
             updateAvailable: true,
+            checked: true,
             updated: true,
         });
 
@@ -90,10 +111,23 @@ describe('createSelfUpdater', () => {
             currentVersion: '1.1.1',
             latestVersion: '1.1.1',
             updateAvailable: false,
+            checked: true,
             updated: false,
         });
 
         expect(run).toHaveBeenCalledTimes(1);
         expect(resolvePlaywrightCli).not.toHaveBeenCalled();
+    });
+
+    it('throws when self-update cannot reach the registry', async () => {
+        const run: CommandRunner = vi.fn(async () => {
+            throw new Error('network unavailable');
+        });
+
+        const selfUpdate = createSelfUpdater(run);
+
+        await expect(selfUpdate({ currentVersion: '1.1.1' })).rejects.toThrow(
+            'Unable to check for updates: network unavailable',
+        );
     });
 });

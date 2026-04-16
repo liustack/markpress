@@ -8,8 +8,10 @@ export const PACKAGE_NAME = '@liustack/markpress';
 export interface UpdateInfo {
     packageName: string;
     currentVersion: string;
-    latestVersion: string;
+    latestVersion: string | null;
     updateAvailable: boolean;
+    checked: boolean;
+    error?: string;
 }
 
 export interface SelfUpdateResult extends UpdateInfo {
@@ -94,15 +96,27 @@ export async function checkForUpdate({
     packageName = PACKAGE_NAME,
     run = runCommand,
 }: CheckForUpdateOptions): Promise<UpdateInfo> {
-    const latestVersion = normalizeVersion(await run('npm', ['view', packageName, 'version']));
     const normalizedCurrentVersion = normalizeVersion(currentVersion);
+    try {
+        const latestVersion = normalizeVersion(await run('npm', ['view', packageName, 'version']));
 
-    return {
-        packageName,
-        currentVersion: normalizedCurrentVersion,
-        latestVersion,
-        updateAvailable: compareVersions(normalizedCurrentVersion, latestVersion) < 0,
-    };
+        return {
+            packageName,
+            currentVersion: normalizedCurrentVersion,
+            latestVersion,
+            updateAvailable: compareVersions(normalizedCurrentVersion, latestVersion) < 0,
+            checked: true,
+        };
+    } catch (error) {
+        return {
+            packageName,
+            currentVersion: normalizedCurrentVersion,
+            latestVersion: null,
+            updateAvailable: false,
+            checked: false,
+            error: error instanceof Error ? error.message : String(error),
+        };
+    }
 }
 
 export function createSelfUpdater(
@@ -114,6 +128,10 @@ export function createSelfUpdater(
         packageName = PACKAGE_NAME,
     }: SelfUpdateOptions): Promise<SelfUpdateResult> => {
         const updateInfo = await checkForUpdate({ currentVersion, packageName, run });
+
+        if (!updateInfo.checked) {
+            throw new Error(`Unable to check for updates: ${updateInfo.error ?? 'unknown error'}`);
+        }
 
         if (!updateInfo.updateAvailable) {
             return {

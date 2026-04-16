@@ -53,6 +53,8 @@ markpress check-update
 markpress self-update
 ```
 
+如果 `check-update` 无法连接 registry，会返回 `checked: false`，此时可继续使用本地 CLI。
+
 ## 用法
 
 ```bash

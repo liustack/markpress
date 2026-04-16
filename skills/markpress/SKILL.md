@@ -28,6 +28,8 @@ If `updateAvailable` is `true`, upgrade in place:
 markpress self-update
 ```
 
+If the update check returns `checked: false`, continue using the local CLI and do not block PDF generation on the network check.
+
 If the command is not found, fall back to the install command above.
 
 ## Decision Tree

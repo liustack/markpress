@@ -55,6 +55,8 @@ markpress check-update
 markpress self-update
 ```
 
+If `check-update` cannot reach the registry, it returns `checked: false` and you can continue using the local CLI.
+
 ## Usage
 
 ```bash
