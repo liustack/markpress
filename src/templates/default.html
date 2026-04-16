@@ -115,6 +115,9 @@
       background: var(--code-bg);
       border-radius: 4px;
       color: var(--text-primary);
+      white-space: break-spaces;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     pre {
@@ -128,6 +131,9 @@
       font-size: 13px;
       line-height: 1.6;
       color: var(--text-primary);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     pre code {
@@ -138,6 +144,9 @@
       border-radius: 0;
       font-size: inherit;
       font-family: inherit;
+      white-space: inherit;
+      overflow-wrap: inherit;
+      word-break: inherit;
     }
 
     /* Syntax highlighting — light theme */

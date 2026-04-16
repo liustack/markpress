@@ -115,6 +115,9 @@
       background: var(--color-canvas-subtle);
       padding: 0.2em 0.4em;
       border-radius: 6px;
+      white-space: break-spaces;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     pre {
@@ -126,12 +129,19 @@
       padding: 16px;
       overflow: auto;
       margin: 0 0 16px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     pre code {
       background: transparent;
       padding: 0;
       font-size: 100%;
+      display: block;
+      white-space: inherit;
+      overflow-wrap: inherit;
+      word-break: inherit;
     }
 
     /* Syntax Highlighting */

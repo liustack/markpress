@@ -189,6 +189,9 @@
             padding: 0.2em 0.5em;
             border-radius: 3px;
             border: 1px solid var(--gray-200);
+            white-space: break-spaces;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         pre {
@@ -203,6 +206,9 @@
             overflow-x: auto;
             position: relative;
             border-radius: 0;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         pre::before {
@@ -220,6 +226,10 @@
             padding: 0;
             color: inherit;
             border: none;
+            display: block;
+            white-space: inherit;
+            overflow-wrap: inherit;
+            word-break: inherit;
         }
 
         /* Syntax Highlighting - Warm Dark */
