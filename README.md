@@ -14,8 +14,17 @@ A CLI toolkit for AI agents to render local Markdown files into high-quality PDF
 
 ## Installation
 
+Requires Node.js 18+.
+
+Install the CLI globally:
+
 ```bash
 npm install -g @liustack/markpress
+```
+
+Then install the Chromium browser used for PDF rendering:
+
+```bash
 npx playwright install chromium
 ```
 
@@ -23,6 +32,27 @@ Or run with `npx`:
 
 ```bash
 npx @liustack/markpress [options]
+```
+
+`markpress` renders PDFs through Playwright + Chromium, so the browser install step is required even if you use `npx`.
+
+Or install as an **Agent Skill** — tell any AI coding tool that supports agent skills (Claude Code, Codex, OpenCode, Cursor, Antigravity, etc.):
+
+```text
+Install the skill from liustack/markpress
+```
+
+Or use the `skills` CLI directly:
+
+```bash
+npx skills add liustack/markpress --skill markpress
+```
+
+To check for updates later:
+
+```bash
+markpress check-update
+markpress self-update
 ```
 
 ## Usage

@@ -9,12 +9,26 @@ CLI tool to convert local Markdown files into PDF documents, with built-in templ
 
 ## Installation
 
+If `markpress` is not installed:
+
 ```bash
 npm install -g @liustack/markpress@latest
 npx playwright install chromium
 ```
 
-> **Version check**: Before generating PDFs, run `markpress --version`. If the command is not found or the version is outdated, re-run the install command above.
+Before generating PDFs, check whether the local CLI is outdated:
+
+```bash
+markpress check-update
+```
+
+If `updateAvailable` is `true`, upgrade in place:
+
+```bash
+markpress self-update
+```
+
+If the command is not found, fall back to the install command above.
 
 ## Decision Tree
 

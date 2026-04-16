@@ -12,8 +12,17 @@
 
 ## 安装
 
+需要 Node.js 18+。
+
+全局安装 CLI：
+
 ```bash
 npm install -g @liustack/markpress
+```
+
+然后安装 PDF 渲染所需的 Chromium 浏览器：
+
+```bash
 npx playwright install chromium
 ```
 
@@ -21,6 +30,27 @@ npx playwright install chromium
 
 ```bash
 npx @liustack/markpress [options]
+```
+
+`markpress` 基于 Playwright + Chromium 导出 PDF，所以即使使用 `npx`，浏览器安装这一步也仍然需要。
+
+也可以作为 **Agent Skill** 安装，在任何支持 Agent Skill 的 AI 编程工具（Claude Code、Codex、OpenCode、Cursor、Antigravity 等）中输入：
+
+```text
+帮我安装这个 skill：liustack/markpress
+```
+
+或使用 `skills` CLI 直接安装：
+
+```bash
+npx skills add liustack/markpress --skill markpress
+```
+
+后续如需检查或升级版本：
+
+```bash
+markpress check-update
+markpress self-update
 ```
 
 ## 用法
