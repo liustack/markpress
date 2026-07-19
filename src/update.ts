@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { createRequire } from 'module';
 
-export const PACKAGE_NAME = '@liustack/markpress';
+export const PACKAGE_NAME = '@liustack/pagepress';
 
 export interface UpdateInfo {
     packageName: string;

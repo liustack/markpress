@@ -1,7 +1,7 @@
 # Project Overview (for AI Agent)
 
 ## Goal
-Provide the `markpress` CLI tool to render local Markdown files into polished documents and export them as **PDF**. Remote URLs and HTML input are not supported.
+Provide the `pagepress` CLI tool to render local Markdown files into polished documents and export them as **PDF**. Remote URLs and HTML input are not supported.
 
 ## Technical Approach
 - **Playwright + Chromium** as the rendering and export engine
@@ -9,7 +9,7 @@ Provide the `markpress` CLI tool to render local Markdown files into polished do
 - **Theme design**: emphasize whitespace and breathing room; avoid cramped layout
 
 ```bash
-cd /path/to/markpress
+cd /path/to/pagepress
 pnpm install
 pnpm exec playwright install chromium
 ```
@@ -32,7 +32,7 @@ src/
 
 ```
 skills/
-└── markpress/
+└── pagepress/
     └── SKILL.md
 ```
 
@@ -41,7 +41,7 @@ The CLI is exposed via `dist/main.js`.
 ## CLI Usage
 
 ```bash
-markpress -i document.md -o output.pdf --template default
+pagepress -i document.md -o output.pdf --template default
 ```
 
 ## Operational Docs (`docs/`)

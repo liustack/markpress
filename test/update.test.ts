@@ -32,14 +32,14 @@ describe('checkForUpdate', () => {
             currentVersion: '1.1.1',
             run,
         })).resolves.toEqual({
-            packageName: '@liustack/markpress',
+            packageName: '@liustack/pagepress',
             currentVersion: '1.1.1',
             latestVersion: '1.1.2',
             updateAvailable: true,
             checked: true,
         });
 
-        expect(run).toHaveBeenCalledWith('npm', ['view', '@liustack/markpress', 'version']);
+        expect(run).toHaveBeenCalledWith('npm', ['view', '@liustack/pagepress', 'version']);
     });
 
     it('reports when current version is already latest', async () => {
@@ -49,7 +49,7 @@ describe('checkForUpdate', () => {
             currentVersion: '1.1.1',
             run,
         })).resolves.toEqual({
-            packageName: '@liustack/markpress',
+            packageName: '@liustack/pagepress',
             currentVersion: '1.1.1',
             latestVersion: '1.1.1',
             updateAvailable: false,
@@ -66,7 +66,7 @@ describe('checkForUpdate', () => {
             currentVersion: '1.1.1',
             run,
         })).resolves.toEqual({
-            packageName: '@liustack/markpress',
+            packageName: '@liustack/pagepress',
             currentVersion: '1.1.1',
             latestVersion: null,
             updateAvailable: false,
@@ -87,7 +87,7 @@ describe('createSelfUpdater', () => {
         const selfUpdate = createSelfUpdater(run, resolvePlaywrightCli);
 
         await expect(selfUpdate({ currentVersion: '1.1.1' })).resolves.toEqual({
-            packageName: '@liustack/markpress',
+            packageName: '@liustack/pagepress',
             currentVersion: '1.1.1',
             latestVersion: '1.1.2',
             updateAvailable: true,
@@ -95,8 +95,8 @@ describe('createSelfUpdater', () => {
             updated: true,
         });
 
-        expect(run).toHaveBeenNthCalledWith(1, 'npm', ['view', '@liustack/markpress', 'version']);
-        expect(run).toHaveBeenNthCalledWith(2, 'npm', ['install', '-g', '@liustack/markpress@latest']);
+        expect(run).toHaveBeenNthCalledWith(1, 'npm', ['view', '@liustack/pagepress', 'version']);
+        expect(run).toHaveBeenNthCalledWith(2, 'npm', ['install', '-g', '@liustack/pagepress@latest']);
         expect(run).toHaveBeenNthCalledWith(3, process.execPath, ['/mock/playwright/cli.js', 'install', 'chromium']);
     });
 
@@ -107,7 +107,7 @@ describe('createSelfUpdater', () => {
         const selfUpdate = createSelfUpdater(run, resolvePlaywrightCli);
 
         await expect(selfUpdate({ currentVersion: '1.1.1' })).resolves.toEqual({
-            packageName: '@liustack/markpress',
+            packageName: '@liustack/pagepress',
             currentVersion: '1.1.1',
             latestVersion: '1.1.1',
             updateAvailable: false,

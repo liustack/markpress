@@ -1,4 +1,4 @@
-# MarkPress
+# PagePress
 
 A CLI toolkit for AI agents to render local Markdown files into high-quality PDF documents.
 
@@ -6,7 +6,7 @@ A CLI toolkit for AI agents to render local Markdown files into high-quality PDF
 
 ## Features
 
-- PDF-only command surface (`markpress`)
+- PDF-only command surface (`pagepress`)
 - Local Markdown file input only (`.md`)
 - Built-in Markdown templates: `default`, `github`, `magazine`
 - Built-in Mermaid rendering for Markdown code blocks
@@ -19,7 +19,7 @@ Requires Node.js 18+.
 Install the CLI globally:
 
 ```bash
-npm install -g @liustack/markpress
+npm install -g @liustack/pagepress
 ```
 
 Then install the Chromium browser used for PDF rendering:
@@ -31,28 +31,28 @@ npx playwright install chromium
 Or run with `npx`:
 
 ```bash
-npx @liustack/markpress [options]
+npx @liustack/pagepress [options]
 ```
 
-`markpress` renders PDFs through Playwright + Chromium, so the browser install step is required even if you use `npx`.
+`pagepress` renders PDFs through Playwright + Chromium, so the browser install step is required even if you use `npx`.
 
 Or install as an **Agent Skill** — tell any AI coding tool that supports agent skills (Claude Code, Codex, OpenCode, Cursor, Antigravity, etc.):
 
 ```text
-Install the skill from liustack/markpress
+Install the skill from liustack/pagepress
 ```
 
 Or use the `skills` CLI directly:
 
 ```bash
-npx skills add liustack/markpress --skill markpress
+npx skills add liustack/pagepress --skill pagepress
 ```
 
 To check for updates later:
 
 ```bash
-markpress check-update
-markpress self-update
+pagepress check-update
+pagepress self-update
 ```
 
 If `check-update` cannot reach the registry, it returns `checked: false` and you can continue using the local CLI.
@@ -61,7 +61,7 @@ If `check-update` cannot reach the registry, it returns `checked: false` and you
 
 ```bash
 # Markdown to PDF
-markpress -i document.md -o output.pdf --template default
+pagepress -i document.md -o output.pdf --template default
 ```
 
 ## Templates
@@ -81,7 +81,7 @@ markpress -i document.md -o output.pdf --template default
 
 ## AI Agent Skill
 
-- [markpress/SKILL.md](skills/markpress/SKILL.md)
+- [pagepress/SKILL.md](skills/pagepress/SKILL.md)
 
 ## License
 

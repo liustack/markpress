@@ -10,7 +10,7 @@ async function runRenderCommand(): Promise<void> {
     const program = new Command();
 
     program
-        .name('markpress')
+        .name('pagepress')
         .description('Render local Markdown files to PDF')
         .version(__APP_VERSION__)
         .requiredOption('-i, --input <path>', 'Input Markdown file path')

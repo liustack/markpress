@@ -1,10 +1,10 @@
-# MarkPress
+# PagePress
 
 面向 AI Agent 的 PDF 渲染 CLI，可将本地 Markdown 文件输出为高质量 PDF。
 
 ## 特性
 
-- 专注 PDF 输出（仅 `markpress`）
+- 专注 PDF 输出（仅 `pagepress`）
 - 仅支持本地 Markdown 文件输入（`.md`）
 - 内置 Markdown 模板：`default`、`github`、`magazine`
 - 支持 Mermaid 代码块渲染
@@ -17,7 +17,7 @@
 全局安装 CLI：
 
 ```bash
-npm install -g @liustack/markpress
+npm install -g @liustack/pagepress
 ```
 
 然后安装 PDF 渲染所需的 Chromium 浏览器：
@@ -29,28 +29,28 @@ npx playwright install chromium
 或使用 `npx`：
 
 ```bash
-npx @liustack/markpress [options]
+npx @liustack/pagepress [options]
 ```
 
-`markpress` 基于 Playwright + Chromium 导出 PDF，所以即使使用 `npx`，浏览器安装这一步也仍然需要。
+`pagepress` 基于 Playwright + Chromium 导出 PDF，所以即使使用 `npx`，浏览器安装这一步也仍然需要。
 
 也可以作为 **Agent Skill** 安装，在任何支持 Agent Skill 的 AI 编程工具（Claude Code、Codex、OpenCode、Cursor、Antigravity 等）中输入：
 
 ```text
-帮我安装这个 skill：liustack/markpress
+帮我安装这个 skill：liustack/pagepress
 ```
 
 或使用 `skills` CLI 直接安装：
 
 ```bash
-npx skills add liustack/markpress --skill markpress
+npx skills add liustack/pagepress --skill pagepress
 ```
 
 后续如需检查或升级版本：
 
 ```bash
-markpress check-update
-markpress self-update
+pagepress check-update
+pagepress self-update
 ```
 
 如果 `check-update` 无法连接 registry，会返回 `checked: false`，此时可继续使用本地 CLI。
@@ -59,7 +59,7 @@ markpress self-update
 
 ```bash
 # Markdown 转 PDF
-markpress -i document.md -o output.pdf --template default
+pagepress -i document.md -o output.pdf --template default
 ```
 
 ## 模板
@@ -79,7 +79,7 @@ markpress -i document.md -o output.pdf --template default
 
 ## AI Agent Skill
 
-- [markpress/SKILL.md](skills/markpress/SKILL.md)
+- [pagepress/SKILL.md](skills/pagepress/SKILL.md)
 
 ## License
 

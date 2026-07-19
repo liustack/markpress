@@ -1,31 +1,31 @@
 ---
-name: markpress
-description: "Render Markdown to PDF with built-in templates and Mermaid diagram support. Use when the user wants to convert Markdown to PDF, generate a report, export documentation, create a formatted document, or produce print-ready output. Trigger phrases include 'convert to PDF', 'save as PDF', 'generate report', 'export as PDF', 'Markdown to PDF', 'print to PDF', '转PDF', '导出PDF', '生成报告'. Also use when the user asks to summarize content into a document, create a weekly/monthly report, or format notes for sharing. Only local Markdown file input is supported — remote URLs are not accepted."
+name: pagepress
+description: "Use when the user wants to convert local Markdown to PDF, generate a report, export documentation, create a formatted document, produce print-ready output, summarize content into a document, or format notes for sharing. Includes built-in templates and Mermaid diagram support. Trigger phrases include 'convert to PDF', 'save as PDF', 'generate report', 'export as PDF', 'Markdown to PDF', 'print to PDF', '转PDF', '导出PDF', '生成报告'. Remote URLs are not accepted."
 ---
 
-# MarkPress — PDF
+# PagePress — PDF
 
 CLI tool to convert local Markdown files into PDF documents, with built-in templates, syntax highlighting, and Mermaid diagram rendering.
 
 ## Installation
 
-If `markpress` is not installed:
+If `pagepress` is not installed:
 
 ```bash
-npm install -g @liustack/markpress@latest
+npm install -g @liustack/pagepress@latest
 npx playwright install chromium
 ```
 
 Before generating PDFs, check whether the local CLI is outdated:
 
 ```bash
-markpress check-update
+pagepress check-update
 ```
 
 If `updateAvailable` is `true`, upgrade in place:
 
 ```bash
-markpress self-update
+pagepress self-update
 ```
 
 If the update check returns `checked: false`, continue using the local CLI and do not block PDF generation on the network check.
@@ -71,7 +71,7 @@ If no frontmatter is present, the title defaults to "Document".
 
 ## Mermaid Diagrams
 
-MarkPress has built-in Mermaid rendering — no preprocessing needed. Standard ` ```mermaid ` code blocks in Markdown are automatically rendered into SVG graphics in the PDF. This works with all templates.
+PagePress has built-in Mermaid rendering — no preprocessing needed. Standard ` ```mermaid ` code blocks in Markdown are automatically rendered into SVG graphics in the PDF. This works with all templates.
 
 Supported diagram types include flowcharts, sequence diagrams, class diagrams, state diagrams, ER diagrams, Gantt charts, and more.
 
@@ -94,7 +94,7 @@ graph TD
 ## Options
 
 ```bash
-markpress -i input.md -o output.pdf --template default
+pagepress -i input.md -o output.pdf --template default
 ```
 
 - `-i, --input <path>` — input Markdown file (remote URLs not supported)
@@ -116,21 +116,21 @@ Use `--safe` when rendering Markdown that may contain embedded scripts. It block
 This matters because writing temp files elsewhere triggers permission prompts and clutters the project. Keep everything in one place:
 
 1. **Write temp files to `$ASSETS_DIR`** — avoids permission prompts and keeps files co-located
-2. **Clean up after render** — delete the temp file immediately after a successful `markpress` run
+2. **Clean up after render** — delete the temp file immediately after a successful `pagepress` run
 3. **Keep only if asked** — if the user explicitly asks to keep the source file, leave it in `$ASSETS_DIR` and report its path
 
 ## Examples
 
 ```bash
 # Markdown report with default template
-markpress -i report.md -o report.pdf --template default
+pagepress -i report.md -o report.pdf --template default
 
 # Developer docs with GitHub style
-markpress -i api-docs.md -o api-docs.pdf --template github
+pagepress -i api-docs.md -o api-docs.pdf --template github
 
 # Polished whitepaper with magazine layout
-markpress -i whitepaper.md -o whitepaper.pdf --template magazine
+pagepress -i whitepaper.md -o whitepaper.pdf --template magazine
 
 # Render with safe mode
-markpress -i untrusted.md -o output.pdf --safe
+pagepress -i untrusted.md -o output.pdf --safe
 ```
